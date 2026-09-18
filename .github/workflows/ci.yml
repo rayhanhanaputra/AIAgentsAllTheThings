@@ -40,9 +40,79 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install dependencies
-        run: pip install -r requirements-dev.txt
+        run: |
+          python -m pip install --upgrade "pip>=23"
+          python -m pip install ".[dev,workbench]"
       - name: Run tests
         run: pytest -q
+
+  connector-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade "pip>=23"
+          python -m pip install ".[workbench]"
+      - name: Run connector and mapper matrix
+        run: |
+          set -euo pipefail
+          python -m sims.workbench_targets.server > /tmp/aat-dummy-targets.log 2>&1 &
+          dummy_pid=$!
+          trap 'kill "$dummy_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:9101/health > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:9101/health > /dev/null || {
+            cat /tmp/aat-dummy-targets.log
+            exit 1
+          }
+          python -m tools.test_workbench_e2e
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install dependencies
+        run: npm --prefix web ci
+      - name: Audit production dependencies
+        run: npm --prefix web audit --omit=dev
+      - name: Install Chromium
+        run: npx --prefix web playwright install --with-deps chromium
+      - name: Lint and check formatting
+        run: |
+          npm --prefix web run lint
+          npm --prefix web run format -- --check
+      - name: Build frontend
+        run: npm --prefix web run build
+      - name: Run browser tests
+        run: npm --prefix web run test:ui
+
+  python-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Audit resolved Python dependencies
+        run: |
+          python -m pip install --upgrade "pip>=23" pip-audit
+          python -m pip_audit .
 
   markdownlint:
     runs-on: ubuntu-latest

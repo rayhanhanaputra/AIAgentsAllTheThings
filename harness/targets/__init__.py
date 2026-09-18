@@ -1,8 +1,7 @@
 """Target plugins.
 
-`agribot-mock` is a deterministic reference agent and is always available.
-`agribot-llm` drives a real LLM and is imported best-effort (it needs an SDK and an
-API key); its absence never breaks the harness.
+Deterministic reference agents are always available. `llm-agent` provides the single
+OpenAI-compatible live-model adapter for every scenario that declares an agent spec.
 """
 from . import agribot_mock  # noqa: F401
 from . import callbot_mock  # noqa: F401
@@ -12,12 +11,6 @@ from . import resolverbot_mock  # noqa: F401
 from . import homebot_mock  # noqa: F401
 from . import controlbot_mock  # noqa: F401
 from . import processbot_mock  # noqa: F401
-from . import agribot_openai  # noqa: F401
 from . import llm_agent  # noqa: F401
 from . import http_agent  # noqa: F401
 from . import tcp_agent  # noqa: F401
-
-try:
-    from . import agribot_llm  # noqa: F401
-except Exception:  # pragma: no cover - optional dependency or missing credentials
-    pass

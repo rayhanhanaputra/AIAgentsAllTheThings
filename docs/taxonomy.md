@@ -2,8 +2,7 @@
 
 This document defines how attacks against AI agents integrated with IoT and
 cyber-physical systems are classified in AIAgentsAllTheThings. It is intended to be
-stable enough to serve as a reference in the accompanying paper and as the
-organizing index for the knowledge base.
+stable enough to organize input adapters, security tests, and the knowledge base.
 
 ## Definitions
 
@@ -57,7 +56,8 @@ C2 with a C1 value-injection variant).
 ### Axis 3 — Effect location (where the impact lands)
 
 Digital-only (data leaves the system) versus cyber-physical (an actuator or physical
-process is affected). Cyber-physical effects are the primary focus of this project.
+process is affected). The Workbench supports both because either can be reached through
+the same encode, deliver, capture, and evaluate workflow.
 
 ## Modality Injection Matrix
 
@@ -125,9 +125,10 @@ channel-injection or are covered better elsewhere:
 - model extraction, model/data poisoning at training time, and supply-chain compromise
   of models or dependencies (OWASP LLM03/LLM04:2025; ATLAS ML-development tactics);
 - unexpected code execution and sandbox escape (OWASP Agentic T11);
-- overwhelming or socially engineering a human in the loop (T10, T15);
-- long-term memory poisoning as a standalone persistence technique (T1 / I6) — currently
-  represented only as a facet of the inter-agent entry (AAT-0005), not as its own entry.
+- overwhelming or socially engineering a human in the loop (T10, T15).
+
+Runtime long-term-memory poisoning is in scope when attacker-controlled content enters
+through a channel the agent later retrieves; see AAT-0010.
 
 These are noted so the omissions read as scoping decisions, not oversights, and are
 candidates for future entries or explicit companions.
@@ -135,7 +136,7 @@ candidates for future entries or explicit companions.
 ## Technique record format
 
 Each knowledge-base file begins with YAML front matter so entries are machine indexable
-and paper-citable. The canonical template is
+and linkable from Workbench results. The canonical template is
 [`kb/_template/technique.md`](../kb/_template/technique.md); the fields are:
 
 ```yaml

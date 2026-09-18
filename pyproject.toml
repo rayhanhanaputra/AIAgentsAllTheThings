@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "aiagentsallthethings"
 version = "0.1.0"
-description = "Knowledge base and testing harness for signal-to-prompt injection against AI agents in cyber-physical systems"
+description = "Security workbench for testing AI agents across text, voice, sensor, image, and device inputs"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "Apache-2.0" }
@@ -15,11 +15,21 @@ dependencies = [
 
 [project.optional-dependencies]
 mqtt = ["paho-mqtt>=2.0,<3"]
-llm = ["anthropic>=0.39"]
-dev = ["pytest>=7.0", "paho-mqtt>=2.0,<3"]
+workbench = [
+    "fastapi>=0.115,<1",
+    "uvicorn>=0.30,<1",
+    "paho-mqtt>=2.0,<3",
+    "websockets>=13,<15",
+    "Pillow>=10,<12",
+]
+dev = [
+    "pytest>=7.0",
+    "httpx>=0.27,<1",
+]
 
 [project.scripts]
 aat = "harness.cli:main"
+aat-workbench-api = "harness.api.__main__:main"
 
 [tool.setuptools.packages.find]
 include = ["harness*"]
@@ -29,4 +39,5 @@ include = ["harness*"]
 harness = ["tests/**/*.yaml"]
 
 [tool.pytest.ini_options]
+pythonpath = ["."]
 testpaths = ["tests"]

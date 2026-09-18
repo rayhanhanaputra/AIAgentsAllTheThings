@@ -46,11 +46,6 @@ def _validate_target(name: str | None) -> None:
     try:
         registry.get("target", name)
     except KeyError:
-        if name == "agribot-llm":
-            raise CliError(
-                "target 'agribot-llm' is unavailable: install the anthropic SDK and "
-                "set ANTHROPIC_API_KEY, then retry."
-            )
         raise CliError(f"unknown target '{name}'. Available: {registry.available('target')}")
 
 

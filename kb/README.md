@@ -1,7 +1,9 @@
 # Knowledge Base
 
-The knowledge base is the browsable corpus of techniques for signal-to-prompt
-injection against AI agents integrated with IoT and cyber-physical systems.
+The knowledge base is the reference corpus behind the Web Workbench. It documents
+reproducible security techniques, success conditions, detection signals, and defenses
+for AI agents receiving text, structured data, sensor, signal, audio, optical,
+inter-agent, and RF inputs.
 
 Entries are grouped by the **channel** that carries the injection. Within each
 channel folder, the `README.md` is a Summary index of that channel's techniques.

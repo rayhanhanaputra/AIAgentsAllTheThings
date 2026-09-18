@@ -1,5 +1,0 @@
-# Harness runtime dependencies.
-PyYAML>=6.0
-paho-mqtt>=2.0,<3    # required only for the simulators under sims/ (live MQTT demo)
-# Optional, for the live LLM target (harness/targets/agribot_llm.py):
-#   anthropic>=0.39

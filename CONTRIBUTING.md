@@ -1,8 +1,37 @@
 # Contributing
 
-Thank you for helping build AIAgentsAllTheThings. The project has two halves and two
-contribution paths: adding a technique to the knowledge base, and adding or improving
-harness code. Most contributions are a single-file knowledge-base pull request.
+Thank you for helping build AIAgentsAllTheThings. The Web Workbench is the user-facing
+product: it encodes an input channel, delivers it to an authorized AI-agent target,
+captures the response, and evaluates deterministic evidence. The knowledge base,
+offline CLI harness, and simulators support that workflow.
+
+Contributions normally improve one of four areas: the Workbench UI/API, a channel
+adapter or connector, a knowledge-base technique, or the offline CLI harness.
+
+## Improving the Web Workbench
+
+- UI code lives under `web/`; keep target setup, Workbench, Campaigns, and History
+  usable across desktop and narrow viewports.
+- The local API, target profiles, input mapper, connectors, evidence analysis, and
+  SQLite history live under `harness/api/`.
+- A channel adapter describes how user-controlled input is encoded. A connector
+  describes how that encoded input reaches a target. Do not couple a connector to one
+  scenario when it can remain channel-agnostic.
+- Add loopback-only dummy-target coverage under `sims/workbench_targets/` and extend
+  `tools/test_workbench_e2e.py` for every supported adapter/connector path.
+- Never store credential values in target profiles, browser state, previews, or run
+  history. Profiles may reference server-side environment-variable names only.
+
+Run backend, connector, and browser checks before opening a pull request:
+
+```bash
+python3 -m pytest -q
+make dummy-targets                    # terminal 1
+make workbench-e2e                    # terminal 2
+npm --prefix web run lint
+npm --prefix web run build
+npm --prefix web run test:ui
+```
 
 ## Adding a knowledge-base technique
 
@@ -24,9 +53,10 @@ harness code. Most contributions are a single-file knowledge-base pull request.
 - **Cite only known mapping ids.** Values in `mappings` and `tags` must already exist
   in the files under [`mappings/`](mappings/). To use a new one, add it there in the
   same pull request.
-- **Simulator-first.** A bound test runs over the in-process `direct` transport
-  against a simulator or reference target. The `hardware: true` field is reserved for
-  future hardware channels and is never the default.
+- **Deterministic corpus tests.** A knowledge-base bound test runs over the in-process
+  `direct` transport against a simulator or reference target. Real targets and guarded
+  hardware bridges are exercised separately through the Web Workbench and are never
+  the default for repository tests.
 
 ### Sanitization rules
 
@@ -39,7 +69,7 @@ Use placeholder, non-routable, non-real values only.
 - No real personal data, no real PII or PHI, no real customer identifiers, and no data
   from a system you are not authorized to test.
 
-## Adding harness code
+## Extending the offline CLI harness
 
 Harness plugins live under [`harness/`](harness/) in the appropriate category
 directory. A new channel is an encoder and a target (plus an oracle when the success
@@ -52,7 +82,8 @@ referenced from the knowledge-base entry's `tests` list.
 Run the full local check (validation, tests, and Markdown lint):
 
 ```bash
-pip install -r requirements-dev.txt
+python3 -m pip install --upgrade "pip>=23"
+python3 -m pip install ".[dev,workbench]"
 make all        # build_registry --check + pytest + markdownlint
 ```
 
@@ -64,9 +95,9 @@ python tools/build_registry.py            # regenerate registry/ if you changed 
 python -m pytest -q                        # run the test suite
 ```
 
-Continuous integration runs the same checks (the front-matter validation, the registry
-rebuild, the test suite, and markdownlint); a pull request that fails any of these will
-not merge.
+Continuous integration runs the same checks, plus the connector matrix, frontend
+lint/format/build, browser tests, and production dependency audits; a pull request that
+fails any of these will not merge.
 
 ## Licensing of contributions
 

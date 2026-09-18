@@ -1,7 +1,9 @@
-# Harness
+# Offline CLI harness
 
-The harness is the executable engine that runs a technique end-to-end against a
-target agent and decides, mechanically, whether the attack succeeded.
+The CLI harness is the deterministic companion to the Web Workbench. It reproduces a
+knowledge-base technique end-to-end against a reference or instrumented target and
+decides mechanically whether the attack succeeded. Use the Web Workbench for normal
+interactive, batch, multi-channel, and real-target testing.
 
 ## Pipeline
 
@@ -45,8 +47,8 @@ Each scenario's default target (`agribot-mock`, `callbot-mock`, `relaybot-mock`,
 explicit, deterministic model of a realistically-vulnerable agent: it has an
 independent safety policy (a benign request is handled correctly) and one or more
 mitigations that can be toggled on. `aat ablate <technique>` reports the per-mitigation
-attack-success breakdown. A live LLM target (`agribot-llm`) is provided for
-demonstrations against a real model.
+attack-success breakdown. The generic `llm-agent` target supports demonstrations
+against an OpenAI-compatible model.
 
 To point the harness at your own agent, write a Target adapter that drives it and
 records its tool calls; every payload then runs against it unchanged. See
@@ -54,9 +56,9 @@ records its tool calls; every payload then runs against it unchanged. See
 
 ## Design invariants
 
-- **Simulator-first.** Execution runs in-process over the `direct` transport against a
-  simulator or reference target. The `hardware: true` field is reserved for future
-  hardware channels and never runs by default.
+- **Deterministic by default.** CLI execution runs in-process over the `direct`
+  transport against a simulator or reference target. Real connectors and guarded
+  hardware delivery belong to the Web Workbench and never run implicitly.
 - **Mechanical oracle.** The primary verdict is a predicate over the action log, not
   an LLM judgment.
 - **Benign baseline.** Every test declares a benign twin that must not trigger the
@@ -68,7 +70,8 @@ Install dependencies and run the offline, deterministic pipeline (in-process `di
 transport, no broker required):
 
 ```bash
-pip install -r requirements.txt        # or: pip install -e .  (adds the `aat` command)
+python3 -m pip install --upgrade "pip>=23"
+python3 -m pip install .               # installs the CLI and adds the `aat` command
 python -m harness.cli list                                 # list registered plugins
 python -m harness.cli run    C2-I3-smartfarm-note-override # verify the attack reproduces
 python -m harness.cli demo   C2-I3-smartfarm-note-override # vulnerable vs hardened + report
@@ -81,5 +84,6 @@ mitigation delta, and writes an evidence report to `out/`.
 The live MQTT version of the same scenario (real broker, real round trip, optional real
 LLM target) is under [`sims/`](../sims/README.md).
 
-To drive a real model instead of the deterministic reference agent, pass
-`--target agribot-llm` (requires the anthropic SDK and an API key).
+To drive a real model instead of the deterministic reference agent, configure
+`AAT_LLM_BASE_URL`, `AAT_LLM_API_KEY`, and `AAT_LLM_MODEL`, then pass
+`--target llm-agent`.

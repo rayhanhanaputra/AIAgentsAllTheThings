@@ -1,13 +1,56 @@
-# Testing your own agent: writing a Target adapter
+# Testing your own agent
 
-The harness ships with deterministic reference agents, but its purpose is to test
-*your* agent — a chatbot, a voice assistant, a Home Assistant automation, an
-LLM-driven controller. You do that by writing one small **Target adapter**: a class
-that receives the encoded attack, drives your agent with it, and records what
-privileged actions your agent took. Every existing payload then runs against your
-agent unchanged, and the scenario's oracle decides whether an attack succeeded.
+The Web Workbench tests an authorized AI agent without requiring repository code
+changes. Select how the agent perceives input, configure how the Workbench reaches it,
+preview the exact wire request, and then run one payload or a campaign.
 
-## The Target interface
+The offline CLI has a separate Python Target adapter interface for repeatable corpus
+tests that need a structured action log.
+
+## Recommended: configure a Workbench target profile
+
+1. Start the API and web interface with `make workbench-api` and
+   `make workbench-web` in separate terminals.
+2. Open **Targets**, create a profile, and label it as simulation or production.
+3. Choose the connector matching the target's real ingress: HTTP, TCP, MQTT,
+   WebSocket, voice HTTP/stream, optical HTTP, or a guarded device bridge.
+4. Configure the endpoint and deterministic request template. Reference credentials
+   by server environment-variable name; never paste credential values into the UI.
+5. Define response markers or forbidden tool names that mechanically prove a
+   violation. Without evidence rules, the result is intentionally inconclusive.
+6. In **Workbench**, choose the input adapter that matches what the target perceives,
+   edit its fields, preview the encoded and wire forms, and send one authorized run.
+7. Move the same configuration to **Campaigns** when you need multiple payloads.
+   Inspect each request, response, and verdict, then use **History** for retained runs.
+
+An input adapter and connector answer different questions:
+
+```text
+input adapter: what does the agent perceive?
+connector:     how does the Workbench deliver it?
+```
+
+For example, a `sensor-value` input may be delivered through MQTT, HTTP, TCP, or
+WebSocket. A `voice-transcript` input may use a voice-service connector. Keep these
+choices independent unless the target itself imposes a restriction.
+
+Use the optional LLM input mapper only when the target request shape cannot be
+expressed reliably with a normal request template. Mapper output is untrusted,
+validated, and retained as evidence.
+
+Use the optional LLM response mapper when the target output cannot be described by
+stable `response_path` and `actions_path` values. It produces normalized Workbench
+text, actions, events, and metadata, while the original response remains authoritative
+raw evidence. Mapping failures are recorded and fall back to deterministic extraction.
+
+## Advanced: write an offline CLI Target adapter
+
+The CLI harness ships with deterministic reference agents. A Python Target adapter
+receives the encoded attack, drives an instrumented agent, and records privileged
+actions. Every bound payload can then run against it, and the scenario oracle decides
+whether the attack succeeded.
+
+### The Target interface
 
 A target is a class with three things:
 
@@ -41,7 +84,7 @@ The three data types involved:
   names (for example `set_valve`, `disclose`, `set_gate`, `release_shipment`), so map
   your agent's actions onto the scenario's names in the adapter (see below).
 
-## Worked example: an HTTP agent
+### Worked example: an HTTP agent
 
 Suppose your agent is a service that accepts a JSON reading and returns the tool calls
 it decided to make. The adapter turns the channel message into your agent's input,
@@ -88,7 +131,7 @@ For a Python agent framework (LangChain, LangGraph, a custom loop), skip the HTT
 import your agent, invoke it with `message.body`, and capture its tool calls through a
 callback or instrumentation, appending each to `self.actions`.
 
-## Mapping your agent's actions to the oracle
+### Mapping your agent's actions to the oracle
 
 The oracle judges by tool name. If your agent calls a valve tool named
 `irrigation.open(minutes=...)` but the `valve_policy` oracle looks for
@@ -107,7 +150,7 @@ if call["name"] == "irrigation.open":
 Alternatively, write a small oracle for your agent's own action vocabulary — see
 `harness/oracles/` for short examples (one per scenario).
 
-## Running the payloads against your agent
+### Running the payloads against your agent
 
 Register the adapter (import it once so `@register` runs), then point any technique at
 it:
@@ -121,14 +164,14 @@ Every payload in that technique is delivered to your agent, and the oracle repor
 attack-success rate and false-positive rate. Use `aat ablate` to see how each
 mitigation your agent implements changes the outcome.
 
-## Testing your own domain
+### Testing your own domain
 
 If your agent is nothing like the shipped scenarios, add a scenario and payload library
 for it (see `harness/scenarios/` and `harness/payloads/` for the pattern), plus an
 oracle that encodes your safety policy. The pipeline, runner, registry, and reporting
 are reused unchanged. See [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
-## Notes
+### CLI adapter notes
 
 - Set a `scenario = "<scenario-name>"` class attribute so `aat` can reject a mismatched
   `--target` (for example, using a smart-farm target on a voice technique). A target

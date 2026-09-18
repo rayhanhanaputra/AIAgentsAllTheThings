@@ -1,7 +1,8 @@
-.PHONY: install check registry test lint all demo
+.PHONY: install check registry test lint all demo workbench-api workbench-web dummy-targets workbench-e2e
 
 install:
-	pip install -r requirements-dev.txt
+	python3 -m pip install --upgrade "pip>=23"
+	python3 -m pip install ".[dev,workbench]"
 
 # Validate the knowledge base and declarative tests against the registry.
 check:
@@ -17,7 +18,7 @@ test:
 
 # Lint Markdown with the same tool and version CI uses.
 lint:
-	npx -y markdownlint-cli2@0.13.0 "**/*.md" "!LICENSE-CODE" "!LICENSE-DOCS"
+	npx -y markdownlint-cli2@0.13.0 "**/*.md" "!web/node_modules/**" "!web/dist/**" "!web/test-results/**" "!web/playwright-report/**" "!LICENSE-CODE" "!LICENSE-DOCS"
 
 # Everything CI runs.
 all: check test lint
@@ -30,3 +31,17 @@ demo:
 	          C7-I2-supportdesk-inter-agent-injection C8-I3-hvac-replay-flood; do \
 	    python3 -m harness.cli demo $$t ; \
 	done
+
+# Start the local-only workbench services in separate terminals.
+workbench-api:
+	python3 -m harness.api
+
+workbench-web:
+	npm --prefix web run dev
+
+dummy-targets:
+	python3 -m sims.workbench_targets.server
+
+# Run in another terminal while dummy-targets is active.
+workbench-e2e:
+	python3 -m tools.test_workbench_e2e

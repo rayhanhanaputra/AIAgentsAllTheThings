@@ -11,7 +11,7 @@ Environment:
   MQTT_PORT     broker port (default: 1883)
   MITIGATIONS   comma-separated subset of
                 freetext_quarantine,schema_validation,policy_gate (default: none)
-  AAT_TARGET    agribot-mock (default) or agribot-llm
+  AAT_TARGET    agribot-mock (default) or llm-agent
 """
 from __future__ import annotations
 
@@ -36,6 +36,7 @@ TARGET_NAME = os.getenv("AAT_TARGET", "agribot-mock")
 def main() -> int:
     scenario = registry.get("scenario", "smartfarm-irrigation")()
     target = registry.get("target", TARGET_NAME)(scenario.policy, MITIGATIONS)
+    target.scenario_obj = scenario
     oracle = registry.get("oracle", "valve_policy")()
 
     def on_connect(client, userdata, flags, reason_code, properties=None):

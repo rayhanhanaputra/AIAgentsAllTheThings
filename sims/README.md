@@ -1,8 +1,9 @@
-# Simulators
+# Simulators and local targets
 
 Virtual devices and target agents so a full attack loop runs locally without any
-physical hardware. Real hardware is out of scope for this release; it would attach
-behind the same transport interface (see `SECURITY.md`).
+physical hardware. These are safe development targets for the Web Workbench and the
+offline CLI. Authorized hardware testing is handled separately through the Workbench's
+guarded device-bridge connector (see `SECURITY.md`).
 
 ## Smart-farm irrigation (flagship, AAT-0001)
 
@@ -21,7 +22,8 @@ docker compose up -d          # Mosquitto on localhost:1883 (anonymous, lab-only
 From the repository root, in its own terminal:
 
 ```bash
-pip install -r requirements.txt
+python3 -m pip install --upgrade "pip>=23"
+python3 -m pip install ".[mqtt]"
 python sims/smartfarm/agent.py                        # vulnerable agent
 MITIGATIONS=freetext_quarantine,schema_validation,policy_gate python sims/smartfarm/agent.py   # hardened
 ```
@@ -48,5 +50,6 @@ The same scenario runs without a broker via the harness `direct` transport:
 python -m harness.cli demo C2-I3-smartfarm-note-override
 ```
 
-To drive a real model instead of the deterministic reference agent, set
-`AAT_TARGET=agribot-llm` (requires the anthropic SDK and an API key).
+To drive an OpenAI-compatible model instead of the deterministic reference agent,
+set `AAT_TARGET=llm-agent`, `AAT_LLM_BASE_URL`, `AAT_LLM_API_KEY`, and
+`AAT_LLM_MODEL`.
