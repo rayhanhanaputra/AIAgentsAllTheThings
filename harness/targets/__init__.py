@@ -12,6 +12,10 @@ from . import resolverbot_mock  # noqa: F401
 from . import homebot_mock  # noqa: F401
 from . import controlbot_mock  # noqa: F401
 from . import processbot_mock  # noqa: F401
+from . import agribot_openai  # noqa: F401
+from . import llm_agent  # noqa: F401
+from . import http_agent  # noqa: F401
+from . import tcp_agent  # noqa: F401
 
 try:
     from . import agribot_llm  # noqa: F401

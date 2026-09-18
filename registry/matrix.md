@@ -6,12 +6,12 @@ Rows are channels (C1..C8), columns are adversary intents (I1..I6). Empty cells 
 | Channel \ Intent | I1 Override | I2 Tool abuse | I3 Safety-limit | I4 Exfiltration | I5 DoS | I6 Persistence |
 | --- | --- | --- | --- | --- | --- | --- |
 | C1 Sensor value |  |  | [AAT-0008](../kb/C1-sensor-value/C1-I3-process-tank-sensor-spoof.md) |  |  |  |
-| C2 Data field |  | [AAT-0001](../kb/C2-data-field/C2-I3-smartfarm-note-override.md) | [AAT-0001](../kb/C2-data-field/C2-I3-smartfarm-note-override.md) |  |  |  |
+| C2 Data field | [AAT-0009](../kb/C2-data-field/C2-I4-webapp-prompt-injection.md) | [AAT-0001](../kb/C2-data-field/C2-I3-smartfarm-note-override.md) | [AAT-0001](../kb/C2-data-field/C2-I3-smartfarm-note-override.md) | [AAT-0009](../kb/C2-data-field/C2-I4-webapp-prompt-injection.md) |  |  |
 | C3 Actuator state | [AAT-0003](../kb/C3-actuator-state/C3-I2-facility-morse-actuation.md) | [AAT-0003](../kb/C3-actuator-state/C3-I2-facility-morse-actuation.md) |  |  |  |  |
 | C4 Voice / DTMF | [AAT-0002](../kb/C4-voice-dtmf/C4-I4-callcenter-voice-override.md) | [AAT-0002](../kb/C4-voice-dtmf/C4-I4-callcenter-voice-override.md) |  | [AAT-0002](../kb/C4-voice-dtmf/C4-I4-callcenter-voice-override.md) |  |  |
 | C5 Optical / QR | [AAT-0004](../kb/C5-optical-visual/C5-I2-logistics-scan-injection.md) | [AAT-0004](../kb/C5-optical-visual/C5-I2-logistics-scan-injection.md) |  |  |  |  |
 | C6 RF / protocol | [AAT-0006](../kb/C6-rf-protocol/C6-I2-smarthome-rf-access.md) | [AAT-0006](../kb/C6-rf-protocol/C6-I2-smarthome-rf-access.md) |  |  |  |  |
-| C7 Indirect / inter-agent | [AAT-0005](../kb/C7-indirect-inter-agent/C7-I2-supportdesk-inter-agent-injection.md) | [AAT-0005](../kb/C7-indirect-inter-agent/C7-I2-supportdesk-inter-agent-injection.md) |  |  |  |  |
+| C7 Indirect / inter-agent | [AAT-0005](../kb/C7-indirect-inter-agent/C7-I2-supportdesk-inter-agent-injection.md) | [AAT-0005](../kb/C7-indirect-inter-agent/C7-I2-supportdesk-inter-agent-injection.md) [AAT-0010](../kb/C7-indirect-inter-agent/C7-I6-supportdesk-memory-poisoning.md) |  |  |  | [AAT-0010](../kb/C7-indirect-inter-agent/C7-I6-supportdesk-memory-poisoning.md) |
 | C8 Feedback-loop |  |  | [AAT-0007](../kb/C8-feedback-loop/C8-I3-hvac-replay-flood.md) |  | [AAT-0007](../kb/C8-feedback-loop/C8-I3-hvac-replay-flood.md) |  |
 
-Counts: 8 technique(s) across 8 channel(s). See `stats.json` for the full breakdown.
+Counts: 10 technique(s) across 8 channel(s). See `stats.json` for the full breakdown.

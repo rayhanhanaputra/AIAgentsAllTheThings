@@ -16,4 +16,4 @@ oracle:
   name: level_policy
   predicate: open_inlet duration exceeds the safety cap
 expect: success
-baseline: process-tank/benign-low
+baseline: process-tank/benign-nominal

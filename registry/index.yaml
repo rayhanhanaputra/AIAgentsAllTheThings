@@ -253,3 +253,59 @@ techniques:
   tests:
   - a4d81f57-3b62-4c19-9e75-2a6d0f3b8c14
   - b5e92a68-4c73-4d2a-af86-3b7e1a4c9d25
+- registry_id: AAT-0009
+  id: C2-I4-webapp-prompt-injection
+  title: Web-App Prompt Injection (running-target)
+  channel: C2
+  intent:
+  - I4
+  - I1
+  effect: digital
+  severity: high
+  status: harness-supported
+  path: kb/C2-data-field/C2-I4-webapp-prompt-injection.md
+  mappings:
+    owasp-llm:
+    - LLM01-prompt-injection
+    - LLM02-sensitive-information-disclosure
+    owasp-agentic:
+    - T06-intent-breaking
+    mitre-atlas:
+    - AML.T0051.000
+  tags:
+  - webapp
+  - http
+  - tcp
+  - exfiltration
+  tests:
+  - aa19b2c3-4d5e-4f60-9a71-8b2c3d4e5f60
+  - bb2ac3d4-5e6f-4071-8b82-9c3d4e5f6071
+- registry_id: AAT-0010
+  id: C7-I6-supportdesk-memory-poisoning
+  title: Support-Desk Persistent Memory Poisoning
+  channel: C7
+  intent:
+  - I6
+  - I2
+  effect: digital
+  severity: high
+  status: harness-supported
+  path: kb/C7-indirect-inter-agent/C7-I6-supportdesk-memory-poisoning.md
+  mappings:
+    owasp-llm:
+    - LLM01-prompt-injection
+    - LLM08-vector-and-embedding-weaknesses
+    owasp-agentic:
+    - T01-memory-poisoning
+    - T02-tool-misuse
+    mitre-atlas:
+    - AML.T0070
+    - AML.T0051.001
+  tags:
+  - inter-agent
+  - rag
+  - support-desk
+  - persistence
+  tests:
+  - c30d5e7f-1a2b-4c3d-8e4f-5a6b7c8d9e01
+  - d41e6f80-2b3c-4d5e-9f60-6b7c8d9e0f12

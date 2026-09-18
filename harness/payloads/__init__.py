@@ -7,3 +7,4 @@ from . import supportdesk  # noqa: F401
 from . import smarthome  # noqa: F401
 from . import hvac  # noqa: F401
 from . import processtank  # noqa: F401
+from . import webapp  # noqa: F401

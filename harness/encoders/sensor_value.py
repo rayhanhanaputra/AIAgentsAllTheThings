@@ -14,5 +14,6 @@ from harness.core.types import Message, Payload
 @register("encoder", "sensor-value")
 class SensorValueEncoder:
     def encode(self, payload: Payload, scenario) -> Message:
-        body = {"channel": "sensor", "metric": "level", "level": payload.fields.get("level")}
+        body = {"channel": "sensor", "metric": "level"}
+        body.update(payload.fields)  # level, plus any note a compromised sensor appends
         return Message(msg_id=uuid.uuid4().hex[:12], topic=scenario.topic, body=body)

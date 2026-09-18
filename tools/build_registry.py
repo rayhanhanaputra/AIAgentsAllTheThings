@@ -45,7 +45,7 @@ REGISTRY_ID_RE = re.compile(r"^AAT-\d{4}$")
 TRANSPORT_LABELS = {
     "direct", "mqtt", "coap", "modbus", "voice", "dtmf", "sip",
     "gpio", "relay", "serial", "ble", "zigbee", "lora", "nfc", "optical", "rf",
-    "inter-agent", "rag", "control",
+    "inter-agent", "rag", "control", "http", "tcp",
 }
 TEST_REQUIRED = ["technique_id", "auto_generated_guid", "scenario", "payload",
                  "encoder", "target", "oracle", "expect", "baseline"]

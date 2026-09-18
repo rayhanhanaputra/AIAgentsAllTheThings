@@ -11,6 +11,9 @@ ids:
   zigbee:      Uses Zigbee
   sip:         Uses SIP / telephony
   dtmf:        Uses DTMF telephone tones
+  http:        Delivered over HTTP to a running app
+  tcp:         Delivered over a raw TCP socket
+  webapp:      Targets a running application / chatbot
   relay:       Uses a relay / switch state channel
   morse:       Uses Morse-encoded signalling
   binary:      Uses a binary toggle sequence
@@ -32,6 +35,7 @@ ids:
   # inter-agent
   inter-agent: Injection propagated between agents
   rag:         Retrieval-augmented generation / retrieved-document poisoning
+  persistence: Persists across sessions (memory / stored state)
   # channel shorthands
   sensor-value: Sensor-value channel (C1)
   data-field:   Data-field channel (C2)

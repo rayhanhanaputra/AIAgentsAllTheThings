@@ -12,7 +12,7 @@ VULNERABLE = frozenset()
 RANGE_ONLY = frozenset({"range_validation"})
 HARDENED = frozenset({"range_validation", "interlock_gate"})
 
-OUT_OF_RANGE = ("process-tank/out-of-range@low", "process-tank/benign-low")
+OUT_OF_RANGE = ("process-tank/out-of-range@low", "process-tank/benign-nominal")
 PLAUSIBLE = ("process-tank/spoofed@plausible-low", "process-tank/benign-sufficient")
 
 

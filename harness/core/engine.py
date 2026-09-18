@@ -27,6 +27,9 @@ def evaluate_case(
     transport_obj = registry.get("transport", transport)()
     oracle_obj = registry.get("oracle", oracle)()
     target_obj = registry.get("target", target)(scenario_obj.policy, frozenset(mitigations))
+    # Make the full scenario available to targets that need more than the policy
+    # (e.g. the generic llm-agent target reads the scenario's agent spec).
+    target_obj.scenario_obj = scenario_obj
     payload = registry.get("payload", payload_ref)
 
     message = encoder_obj.encode(payload, scenario_obj)
