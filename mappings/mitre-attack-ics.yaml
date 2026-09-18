@@ -1,0 +1,26 @@
+# MITRE ATT&CK for ICS — controlled vocabulary.
+# Reference: https://attack.mitre.org/matrices/ics/
+# Used for the cyber-physical / control-loop channels (C1, C2, C3, C8), which MITRE
+# ATLAS does not cover. Ids verified against attack.mitre.org.
+ids:
+  T1692.001:
+    name: "Unauthorized Message: Command Message"
+    ref: https://attack.mitre.org/techniques/T1692/001
+  T1692.002:
+    name: "Unauthorized Message: Reporting Message"
+    ref: https://attack.mitre.org/techniques/T1692/002
+  T0831:
+    name: Manipulation of Control
+    ref: https://attack.mitre.org/techniques/T0831
+  T0836:
+    name: Modify Parameter
+    ref: https://attack.mitre.org/techniques/T0836
+  T0814:
+    name: Denial of Service
+    ref: https://attack.mitre.org/techniques/T0814
+  T0813:
+    name: Denial of Control
+    ref: https://attack.mitre.org/techniques/T0813
+  T0880:
+    name: Loss of Safety
+    ref: https://attack.mitre.org/techniques/T0880

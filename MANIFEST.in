@@ -1,0 +1,2 @@
+recursive-include harness/tests *.yaml
+include README.md LICENSE-CODE LICENSE-DOCS

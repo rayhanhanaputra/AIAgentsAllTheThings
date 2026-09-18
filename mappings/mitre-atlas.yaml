@@ -1,0 +1,18 @@
+# MITRE ATLAS — controlled vocabulary. Reference: https://atlas.mitre.org
+# Ids verified against the ATLAS technique pages: LLM Prompt Injection (AML.T0051) has
+# Direct/Indirect sub-techniques, and RAG Poisoning (AML.T0070) was added in the 2025
+# releases. ATLAS has no technique for sensor spoofing or control-loop replay, so the
+# C1 and C8 entries map to MITRE ATT&CK for ICS instead (see mitre-attack-ics.yaml).
+ids:
+  AML.T0051:
+    name: LLM Prompt Injection
+    ref: https://atlas.mitre.org/techniques/AML.T0051
+  AML.T0051.000:
+    name: "LLM Prompt Injection: Direct"
+    ref: https://atlas.mitre.org/techniques/AML.T0051.000
+  AML.T0051.001:
+    name: "LLM Prompt Injection: Indirect"
+    ref: https://atlas.mitre.org/techniques/AML.T0051.001
+  AML.T0070:
+    name: RAG Poisoning
+    ref: https://atlas.mitre.org/techniques/AML.T0070

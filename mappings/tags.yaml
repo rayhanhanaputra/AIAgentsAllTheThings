@@ -1,0 +1,50 @@
+# Controlled tag vocabulary. Keep this list small and meaningful; lint entries
+# against it to prevent tag sprawl.
+ids:
+  # transports and protocols
+  mqtt:        Uses the MQTT protocol
+  coap:        Uses the CoAP protocol
+  modbus:      Uses the Modbus protocol
+  ble:         Uses Bluetooth Low Energy
+  nfc:         Uses NFC
+  rf:          Uses a radio-frequency channel
+  zigbee:      Uses Zigbee
+  sip:         Uses SIP / telephony
+  dtmf:        Uses DTMF telephone tones
+  relay:       Uses a relay / switch state channel
+  morse:       Uses Morse-encoded signalling
+  binary:      Uses a binary toggle sequence
+  serial:      Uses a serial / UART channel
+  gpio:        Uses GPIO
+  # domains
+  iot:         General IoT deployment
+  agriculture: Smart-farm / agriculture domain
+  smart-home:  Smart-home domain
+  industrial:  Industrial / OT domain
+  call-center: Voice call-center domain
+  logistics:   Logistics / warehouse domain
+  support-desk: Customer support / help-desk domain
+  physical-access: Physical access control (gate, door, alarm)
+  # optical / vision
+  qr:          Uses a QR code
+  ocr:         Uses OCR of text in an image
+  vision:      Targets a vision-enabled agent
+  # inter-agent
+  inter-agent: Injection propagated between agents
+  rag:         Retrieval-augmented generation / retrieved-document poisoning
+  # channel shorthands
+  sensor-value: Sensor-value channel (C1)
+  data-field:   Data-field channel (C2)
+  actuator:     Actuator / state channel (C3)
+  voice:        Voice channel (C4)
+  optical:      Optical channel (C5)
+  # feedback-loop / control
+  replay:      Replay of prior messages
+  flooding:    Flooding the input stream
+  control:     Targets a control loop
+  hvac:        HVAC / climate control domain
+  # effects
+  safety-limit: Violates a configured safety limit
+  unsafe-actuation: Drives an actuator to an unsafe state
+  exfiltration: Data exfiltration
+  dos:          Denial of service

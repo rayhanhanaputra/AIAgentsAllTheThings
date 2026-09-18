@@ -1,0 +1,9 @@
+# Live smart-farm demo broker. Lab-only; the broker allows anonymous access on
+# purpose to model an insecure IoT deployment.
+services:
+  broker:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro

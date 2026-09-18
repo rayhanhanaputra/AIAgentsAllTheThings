@@ -1,0 +1,23 @@
+# OWASP Top 10 for LLM Applications (2025 edition) — controlled vocabulary.
+# Reference: https://genai.owasp.org  (ids and names follow the 2025 edition; the 2026
+# edition renumbers several of these, so entries are pinned to 2025 here.)
+# Add an id here before citing it in a knowledge-base entry.
+ids:
+  LLM01-prompt-injection:
+    name: Prompt Injection
+    ref: https://genai.owasp.org
+  LLM02-sensitive-information-disclosure:
+    name: Sensitive Information Disclosure
+    ref: https://genai.owasp.org
+  LLM05-improper-output-handling:
+    name: Improper Output Handling
+    ref: https://genai.owasp.org
+  LLM06-excessive-agency:
+    name: Excessive Agency
+    ref: https://genai.owasp.org
+  LLM08-vector-and-embedding-weaknesses:
+    name: Vector and Embedding Weaknesses
+    ref: https://genai.owasp.org
+  LLM10-unbounded-consumption:
+    name: Unbounded Consumption
+    ref: https://genai.owasp.org

@@ -1,0 +1,26 @@
+# OWASP Agentic AI — Threats and Mitigations (v1.1) — controlled vocabulary.
+# Reference: https://genai.owasp.org  (Agentic Security Initiative). Ids follow the
+# Threats and Mitigations catalogue T1-T17; the local slugs zero-pad the number
+# (T01..T17) so they sort correctly. Add an id here before citing it.
+ids:
+  T01-memory-poisoning:
+    name: Memory Poisoning
+    ref: https://genai.owasp.org
+  T02-tool-misuse:
+    name: Tool Misuse
+    ref: https://genai.owasp.org
+  T03-privilege-compromise:
+    name: Privilege Compromise
+    ref: https://genai.owasp.org
+  T04-resource-overload:
+    name: Resource Overload
+    ref: https://genai.owasp.org
+  T06-intent-breaking:
+    name: Intent Breaking and Goal Manipulation
+    ref: https://genai.owasp.org
+  T09-identity-spoofing:
+    name: Identity Spoofing and Impersonation
+    ref: https://genai.owasp.org
+  T12-agent-communication-poisoning:
+    name: Agent Communication Poisoning
+    ref: https://genai.owasp.org

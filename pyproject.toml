@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aiagentsallthethings"
+version = "0.1.0"
+description = "Knowledge base and testing harness for signal-to-prompt injection against AI agents in cyber-physical systems"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
+dependencies = [
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+mqtt = ["paho-mqtt>=2.0,<3"]
+llm = ["anthropic>=0.39"]
+dev = ["pytest>=7.0", "paho-mqtt>=2.0,<3"]
+
+[project.scripts]
+aat = "harness.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["harness*"]
+
+[tool.setuptools.package-data]
+# Ship the declarative test YAMLs so the CLI works from a non-editable install too.
+harness = ["tests/**/*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
