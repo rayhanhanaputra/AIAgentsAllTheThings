@@ -37,9 +37,8 @@ class EvidenceRules(BaseModel):
 
 class TargetProfileInput(BaseModel):
     name: str = Field(min_length=1, max_length=80)
-    environment: Literal["simulation", "staging", "production"]
+    environment: Literal["staging", "production"]
     connector: Literal[
-        "simulator",
         "http",
         "tcp",
         "mqtt",
@@ -109,9 +108,9 @@ class TargetProfileInput(BaseModel):
     voice_stream_chunk_bytes: int = Field(default=16_384, ge=1_024, le=65_536)
     voice_stream_max_events: int = Field(default=100, ge=1, le=500)
 
-    hardware_kind: Literal["ble", "nfc", "gpio"] = "ble"
+    hardware_kind: Literal["ble", "nfc", "gpio", "led"] = "ble"
     hardware_operation: Literal[
-        "ble_advertise", "nfc_emulate", "gpio_sequence"
+        "ble_advertise", "nfc_emulate", "gpio_sequence", "led_sequence"
     ] = "ble_advertise"
     hardware_device_id: Optional[str] = Field(default=None, max_length=128)
     hardware_allowed_device_ids: List[str] = Field(default_factory=list, max_length=20)
@@ -127,6 +126,12 @@ class TargetProfileInput(BaseModel):
         min_length=2,
         max_length=10_000,
     )
+    observer_kind: Literal["none", "http", "browser"] = "none"
+    observer_url: Optional[str] = Field(default=None, max_length=2048)
+    observer_selector: Optional[str] = Field(default=None, max_length=512)
+    observer_wait_ms: int = Field(default=1_000, ge=0, le=30_000)
+    observer_timeout_seconds: float = Field(default=10, ge=1, le=30)
+    observer_capture_screenshot: bool = True
 
     timeout_seconds: float = Field(default=20, ge=1, le=60)
     evidence: EvidenceRules = Field(default_factory=EvidenceRules)
@@ -256,8 +261,6 @@ class TargetProfileInput(BaseModel):
     @model_validator(mode="after")
     def connector_configuration_matches(self) -> "TargetProfileInput":
         if self.mapper_enabled:
-            if self.connector == "simulator":
-                raise ValueError("input mapping agents require a real target connector")
             if not self.mapper_endpoint or not self.mapper_model or not self.mapper_api_key_env:
                 raise ValueError("input mapping agents require endpoint, model, and API key environment variable")
             parsed_mapper = urlsplit(self.mapper_endpoint)
@@ -274,8 +277,6 @@ class TargetProfileInput(BaseModel):
             if "{{mapped}}" not in self.request_template:
                 raise ValueError("mapper-enabled request templates must contain {{mapped}}")
         if self.response_mapper_enabled:
-            if self.connector == "simulator":
-                raise ValueError("response mapping agents require a real target connector")
             if (
                 not self.response_mapper_endpoint
                 or not self.response_mapper_model
@@ -304,10 +305,6 @@ class TargetProfileInput(BaseModel):
                 not in {"localhost", "127.0.0.1", "::1"}
             ):
                 raise ValueError("non-loopback response mapper endpoints must use HTTPS")
-        if self.connector == "simulator":
-            if self.environment != "simulation":
-                raise ValueError("simulator targets must use the simulation environment")
-            return self
         if self.connector == "http":
             if not self.endpoint:
                 raise ValueError("HTTP targets require an endpoint")
@@ -442,6 +439,7 @@ class TargetProfileInput(BaseModel):
                 "ble": "ble_advertise",
                 "nfc": "nfc_emulate",
                 "gpio": "gpio_sequence",
+                "led": "led_sequence",
             }[self.hardware_kind]
             if self.hardware_operation != expected_operation:
                 raise ValueError("hardware operation does not match the selected device kind")
@@ -460,6 +458,25 @@ class TargetProfileInput(BaseModel):
                     json.loads(template)
                 except json.JSONDecodeError as exc:
                     raise ValueError("hardware bridge templates must be valid JSON") from exc
+            if self.observer_kind != "none":
+                if not self.observer_url:
+                    raise ValueError("out-of-band observers require a URL")
+                observer_url = urlsplit(self.observer_url)
+                if (
+                    observer_url.scheme not in {"http", "https"}
+                    or not observer_url.hostname
+                ):
+                    raise ValueError("observer URL must be absolute HTTP(S)")
+                if observer_url.username or observer_url.password or observer_url.fragment:
+                    raise ValueError("observer URL cannot contain credentials or a fragment")
+                if observer_url.scheme == "http" and observer_url.hostname not in {
+                    "localhost",
+                    "127.0.0.1",
+                    "::1",
+                }:
+                    raise ValueError("non-loopback observers must use HTTPS")
+                if self.observer_kind == "browser" and not self.observer_selector:
+                    raise ValueError("browser observers require a CSS selector")
             return self
         if self.connector == "tcp":
             if not self.host or not self.port:
@@ -499,6 +516,31 @@ class TargetStore:
                 )
                 """
             )
+            rows = connection.execute(
+                "SELECT id, profile_json FROM target_profiles"
+            ).fetchall()
+            legacy_ids = []
+            legacy_updates = []
+            for row in rows:
+                try:
+                    profile = json.loads(row["profile_json"])
+                except (TypeError, json.JSONDecodeError):
+                    continue
+                if profile.get("connector") == "simulator":
+                    legacy_ids.append(row["id"])
+                elif profile.get("environment") == "simulation":
+                    profile["environment"] = "staging"
+                    legacy_updates.append((json.dumps(profile), row["id"]))
+            if legacy_ids:
+                connection.executemany(
+                    "DELETE FROM target_profiles WHERE id = ?",
+                    ((target_id,) for target_id in legacy_ids),
+                )
+            if legacy_updates:
+                connection.executemany(
+                    "UPDATE target_profiles SET profile_json = ? WHERE id = ?",
+                    legacy_updates,
+                )
 
     def _connect(self) -> sqlite3.Connection:
         connection = sqlite3.connect(str(self.path), timeout=5)

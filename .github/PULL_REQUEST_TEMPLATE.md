@@ -8,7 +8,7 @@
 
 - [ ] New knowledge-base technique
 - [ ] Change to an existing technique
-- [ ] Harness code (plugin, test, or engine)
+- [ ] Workbench code (UI, API, adapter, connector, or test)
 - [ ] Documentation or tooling
 
 ## Checklist for a knowledge-base technique
@@ -19,7 +19,7 @@
 - [ ] `success` is a falsifiable predicate over a privileged action (not vague, not
       LLM-judged).
 - [ ] All `mappings` and `tags` ids already exist under `mappings/`.
-- [ ] Any bound test defaults to a simulator (`hardware: false`).
+- [ ] Reproduction cases use an authorized lab target and include a benign control.
 - [ ] Values are sanitized (placeholder domains, addresses, and credentials only).
 
 ## Validation

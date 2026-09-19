@@ -2,11 +2,11 @@
 
 Thank you for helping build AIAgentsAllTheThings. The Web Workbench is the user-facing
 product: it encodes an input channel, delivers it to an authorized AI-agent target,
-captures the response, and evaluates deterministic evidence. The knowledge base,
-offline CLI harness, and simulators support that workflow.
+captures the response, and evaluates deterministic evidence. The knowledge base
+documents reusable techniques and mitigations.
 
-Contributions normally improve one of four areas: the Workbench UI/API, a channel
-adapter or connector, a knowledge-base technique, or the offline CLI harness.
+Contributions normally improve one of three areas: the Workbench UI/API, a channel
+adapter or connector, or a knowledge-base technique.
 
 ## Improving the Web Workbench
 
@@ -17,7 +17,7 @@ adapter or connector, a knowledge-base technique, or the offline CLI harness.
 - A channel adapter describes how user-controlled input is encoded. A connector
   describes how that encoded input reaches a target. Do not couple a connector to one
   scenario when it can remain channel-agnostic.
-- Add loopback-only dummy-target coverage under `sims/workbench_targets/` and extend
+- Add loopback-only connector coverage under `tests/fixtures/connector_targets/` and extend
   `tools/test_workbench_e2e.py` for every supported adapter/connector path.
 - Never store credential values in target profiles, browser state, previews, or run
   history. Profiles may reference server-side environment-variable names only.
@@ -26,7 +26,7 @@ Run backend, connector, and browser checks before opening a pull request:
 
 ```bash
 python3 -m pytest -q
-make dummy-targets                    # terminal 1
+make connector-fixtures               # terminal 1
 make workbench-e2e                    # terminal 2
 npm --prefix web run lint
 npm --prefix web run build
@@ -53,10 +53,9 @@ npm --prefix web run test:ui
 - **Cite only known mapping ids.** Values in `mappings` and `tags` must already exist
   in the files under [`mappings/`](mappings/). To use a new one, add it there in the
   same pull request.
-- **Deterministic corpus tests.** A knowledge-base bound test runs over the in-process
-  `direct` transport against a simulator or reference target. Real targets and guarded
-  hardware bridges are exercised separately through the Web Workbench and are never
-  the default for repository tests.
+- **Document reproducibility.** A `reproduced` entry must describe a controlled,
+  authorized setup and a falsifiable observation that a reviewer can repeat through
+  the Workbench or an equivalent lab target.
 
 ### Sanitization rules
 
@@ -68,14 +67,6 @@ Use placeholder, non-routable, non-real values only.
 - Credentials: obvious placeholders such as `P@ssw0rd-EXAMPLE`; never real secrets.
 - No real personal data, no real PII or PHI, no real customer identifiers, and no data
   from a system you are not authorized to test.
-
-## Extending the offline CLI harness
-
-Harness plugins live under [`harness/`](harness/) in the appropriate category
-directory. A new channel is an encoder and a target (plus an oracle when the success
-condition is new). Declarative tests go in
-`harness/tests/<technique-slug>/` and must carry a stable `auto_generated_guid`,
-referenced from the knowledge-base entry's `tests` list.
 
 ## Before you open a pull request
 
@@ -90,7 +81,7 @@ make all        # build_registry --check + pytest + markdownlint
 Or individually:
 
 ```bash
-python tools/build_registry.py --check    # validate the knowledge base and tests
+python tools/build_registry.py --check    # validate the knowledge base
 python tools/build_registry.py            # regenerate registry/ if you changed entries
 python -m pytest -q                        # run the test suite
 ```

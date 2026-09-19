@@ -1,7 +1,7 @@
 # Glossary
 
-Canonical definitions used across the Web Workbench, knowledge base, CLI harness, and
-simulators. Other documents reference this file rather than redefining terms.
+Canonical definitions used across the Web Workbench and knowledge base. Other
+documents reference this file rather than redefining terms.
 
 - **Agent** — an LLM-driven system that autonomously observes inputs, reasons, and
   invokes tools or actuators, including physical ones.
@@ -42,7 +42,7 @@ simulators. Other documents reference this file rather than redefining terms.
   successful.
 - **False-Positive Rate (FPR)** — the fraction of benign runs that nonetheless produce
   a policy-violating action.
-- **Simulation environment** — the safe default target used to learn and preview the
-  workflow without external delivery.
+- **Staging environment** — an explicitly configured lab or pre-production target used
+  for controlled assessment before production.
 - **Production environment** — an explicitly configured, authorized real target.
   Every run requires acknowledgement; campaigns are forced to concurrency one.

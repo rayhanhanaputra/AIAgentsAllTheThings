@@ -7,7 +7,7 @@ function sessionResult({
   response,
 }: {
   runId: string;
-  mode: 'repeater' | 'intruder' | 'channel' | 'workbench' | 'campaign';
+  mode: 'workbench' | 'campaign';
   script: string;
   response: string;
 }) {
@@ -15,7 +15,7 @@ function sessionResult({
     run_id: runId,
     mode,
     state: 'completed',
-    provider: 'simulated',
+    provider: 'http',
     script,
     response_text: response,
     canary: `CANARY-${runId}`,
@@ -54,12 +54,36 @@ const intruderCases = [
 ];
 
 const historyRuns = [
-  sessionResult({
-    runId: 'history-run-1',
-    mode: 'workbench',
-    script: 'first history input',
-    response: 'First history response',
-  }),
+  {
+    ...sessionResult({
+      runId: 'history-run-1',
+      mode: 'workbench',
+      script: 'first history input',
+      response: 'First history response',
+    }),
+    metadata: {
+      exchange: {
+        response_metadata: {
+          observation: {
+            before: {
+              kind: 'http',
+              phase: 'before',
+              source: 'http://target.test/status',
+              text: 'idle',
+              metadata: { status: 200 },
+            },
+            after: {
+              kind: 'http',
+              phase: 'after',
+              source: 'http://target.test/status',
+              text: 'physical signal processed',
+              metadata: { status: 200 },
+            },
+          },
+        },
+      },
+    },
+  },
   sessionResult({
     runId: 'history-run-2',
     mode: 'campaign',
@@ -71,18 +95,18 @@ const historyRuns = [
 test.beforeEach(async ({ page }) => {
   const targets: Array<Record<string, unknown>> = [
     {
-      id: 'local-simulator',
-      name: 'Local Simulator',
-      environment: 'simulation',
-      connector: 'simulator',
+      id: 'staging-agent',
+      name: 'Staging Agent',
+      environment: 'staging',
+      connector: 'http',
       enabled: true,
-      endpoint: null,
+      endpoint: 'https://staging-agent.example.com/api/chat',
       method: 'POST',
       headers: {},
       secret_headers: {},
       request_template: '{"input":"{{input}}"}',
-      response_path: null,
-      actions_path: null,
+      response_path: 'answer',
+      actions_path: 'actions',
       host: null,
       port: null,
       tcp_raw: false,
@@ -471,6 +495,50 @@ test('an LLM response mapper preserves raw evidence and uses an environment refe
   await expect(
     page.getByText(/Raw evidence is always preserved/),
   ).toBeVisible();
+});
+
+test('a physical LED rig can configure an out-of-band browser observer', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect(
+    page.getByText('Local workspace', { exact: true }),
+  ).toHaveAttribute('data-api-status', 'online');
+  await page.getByRole('tab', { name: 'Targets', exact: true }).click();
+  await page.getByLabel('Connector').selectOption('device-bridge');
+  await page.getByLabel('Device family').selectOption('led');
+  await expect(page.getByLabel('Selected resource')).toHaveValue('pin-9');
+  await expect(page.locator('#target-request-template')).toHaveValue(
+    /\{\{body\}\}/,
+  );
+
+  await page.getByLabel('Out-of-band observer').selectOption('browser');
+  await page.getByLabel('Observer URL').fill('http://127.0.0.1:9101/target-ui');
+  await page
+    .getByLabel('Response CSS selector')
+    .fill('[data-testid="agent-response"]');
+  await expect(
+    page.getByRole('checkbox', {
+      name: /Capture before and after screenshots/,
+    }),
+  ).toBeChecked();
+  await expect(
+    page.getByText(/observer captures before and after state/),
+  ).toBeVisible();
+});
+
+test('out-of-band observations show before and after target state', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect(
+    page.getByText('Local workspace', { exact: true }),
+  ).toHaveAttribute('data-api-status', 'online');
+  await page.getByRole('tab', { name: 'History', exact: true }).click();
+  await page.getByRole('tab', { name: 'Observations', exact: true }).click();
+  const response = page.getByLabel('Captured response');
+  await expect(response.getByText('idle', { exact: true })).toBeVisible();
+  await expect(response.getByText('physical signal processed')).toBeVisible();
 });
 
 test('channel drafts survive changing tools and dark layout keeps its geometry', async ({

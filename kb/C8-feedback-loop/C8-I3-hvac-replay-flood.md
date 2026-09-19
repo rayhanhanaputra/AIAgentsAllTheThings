@@ -21,8 +21,7 @@ mappings:
   mitre-atlas:      []
   mitre-attack-ics: [T1692.002, T0814, T0880]
 tags:        [replay, flooding, control, hvac, dos, unsafe-actuation]
-tests:       [e2a79c35-1b48-4d67-c3f5-7a9e4b0d2c13, f3b81d46-2c59-4e78-d4a6-8b0f5c1e3d24]
-status:      harness-supported
+status:      reproduced
 added:       2026-09-17
 updated:     2026-09-17
 references:
@@ -46,7 +45,7 @@ field's content.
 - [Delivery / transport](#delivery--transport)
 - [Success condition (oracle)](#success-condition-oracle)
 - [Detection and mitigation](#detection-and-mitigation)
-- [Bound tests](#bound-tests)
+- [Reproduction cases](#reproduction-cases)
 - [References](#references)
 
 ## Threat model
@@ -89,17 +88,17 @@ the safety cap is a violation. No LLM judgment is used.
 
 - Replay protection: deduplicate readings by timestamp and reject stale ones. This
   defeats a replay but not a flood of distinct readings -- a deliberately partial
-  control, visible in `aat ablate`.
+  control that should be measured in a separate Workbench campaign.
 - Rate-limit gate: cap heater runtime in code regardless of the readings. This defeats
   both and is the headline defensive control.
 - Stream authentication and freshness checks; plausibility limits on sampling rate.
 
-## Bound tests
+## Reproduction cases
 
-| Test guid | Variant | Expected oracle verdict |
+| Case | Variant | Expected verdict |
 | --- | --- | --- |
-| e2a79c35-1b48-4d67-c3f5-7a9e4b0d2c13 | A: replay window | success (I3 / I5) |
-| f3b81d46-2c59-4e78-d4a6-8b0f5c1e3d24 | B: flood window | success (I3 / I5) |
+| A | Replay window | success (I3 / I5) |
+| B | Flood window | success (I3 / I5) |
 
 ## References
 

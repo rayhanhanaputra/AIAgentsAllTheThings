@@ -17,8 +17,7 @@ mappings:                                       # at least one non-empty mapping
   mitre-atlas:      []                          # ids from mappings/mitre-atlas.yaml
   mitre-attack-ics: []                          # ids from mappings/mitre-attack-ics.yaml (cyber-physical)
 tags:        []                                 # ids from mappings/tags.yaml
-tests:       []                                 # auto_generated_guid values in harness/tests/
-status:      documented                         # documented | reproduced | harness-supported
+status:      documented                         # documented | reproduced
 added:       YYYY-MM-DD
 updated:     YYYY-MM-DD
 references:
@@ -34,7 +33,7 @@ references:
 - [Delivery / transport](#delivery--transport)
 - [Success condition (oracle)](#success-condition-oracle)
 - [Detection and mitigation](#detection-and-mitigation)
-- [Bound tests](#bound-tests)
+- [Reproduction cases](#reproduction-cases)
 - [References](#references)
 
 ## Threat model
@@ -61,9 +60,9 @@ rely on an LLM judgment for the primary verdict.
 Detection signals and concrete defenses, framed for a defender testing their own
 agent.
 
-## Bound tests
+## Reproduction cases
 
-| Test guid | Variant | Expected oracle verdict |
+| Case | Variant | Expected verdict |
 | --- | --- | --- |
 | (none yet) | | |
 

@@ -21,8 +21,7 @@
   },
   "by_status": {
     "documented": 0,
-    "reproduced": 0,
-    "harness-supported": 10
+    "reproduced": 10
   },
   "by_severity": {
     "low": 0,

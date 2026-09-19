@@ -61,6 +61,25 @@ Input → Channel adapter → Optional input mapper → Connector
 | Optical HTTP | QR, OCR, and multimodal services |
 | Device bridge | Allowlisted BLE, NFC, and GPIO operations with mandatory stop |
 
+### Physical hardware rigs
+
+A device-bridge target can emit an allowlisted LED, GPIO, BLE, or NFC stimulus and
+capture the target agent's response through a separate HTTP or Playwright browser
+observer. Each physical run records before/after state, optional UI screenshots, the
+bridge acknowledgement, and emergency-stop confirmation on one timeline.
+
+The included Arduino/ESP32 rig converts Binary/Morse `blink_units` into bounded LED
+pulses for testing light-sensor and camera-based agents:
+
+```bash
+python3 -m pip install ".[workbench,hardware]"
+python3 -m playwright install chromium
+aat-arduino-bridge --simulate
+```
+
+See [the Arduino LED rig guide](hardware/arduino/README.md) for wiring, firmware, and
+real serial-port usage.
+
 ## Quick start
 
 Requirements: Python 3.9+, Node.js 22+, and npm.
@@ -80,7 +99,7 @@ make workbench-web   # http://127.0.0.1:3417
 
 Then:
 
-1. Open **Targets** and configure a simulator, staging, or production agent.
+1. Open **Targets** and configure an authorized staging or production agent.
 2. Choose its input representation and edit the decoded fields in **Workbench**.
 3. Preview the wire request, send it, and inspect the response and evidence.
 4. Use **Campaigns** when the single request is correct and batch testing is safe.
@@ -114,17 +133,29 @@ are not accepted as deterministic proof of a security violation.
 
 ### Test every connector locally
 
-Safe dummy targets are included for every connector, including an embedded MQTT
-broker and dummy OpenAI-compatible mapper:
+Loopback fixtures are included for every connector, including an embedded MQTT
+broker and a dummy OpenAI-compatible mapper:
 
 ```bash
-make dummy-targets    # terminal 1
+make connector-fixtures # terminal 1
 make workbench-e2e    # terminal 2
 ```
 
-The current matrix exercises 75 supported channel/connector and mapper paths. Media- and
-device-specific combinations that have no valid meaning are marked N/A by design.
+The matrix exercises 63 channel, connector, mapper, and physical-rig paths. Media- and
+device-specific combinations with no valid meaning are marked N/A by design.
 See [the connector testing guide](docs/guides/testing-workbench-connectors.md).
+
+## Companion SimLab
+
+<p align="center">
+  <img src="docs/assets/simlab-demo.gif" alt="SimLab gallery, normal Smart Farm animation, and the visible compromised state after an injected Workbench input" width="100%">
+</p>
+
+[AIAgentsAllTheThings-SimLab](https://github.com/rayhanhanaputra/AIAgentsAllTheThings-SimLab)
+is the separate visual demonstration target. Configure one of its endpoints in
+**Targets**, send the controlled input from this Workbench, and watch the normal or
+compromised state appear in the corresponding real-world schematic. The recording
+above shows the gallery, normal operation, and the attack transition.
 
 ## Production safeguards
 
@@ -138,31 +169,15 @@ See [the connector testing guide](docs/guides/testing-workbench-connectors.md).
 
 See [SECURITY.md](SECURITY.md) before connecting a real target.
 
-## Knowledge base and CLI
-
-### Knowledge base
+## Knowledge base
 
 [`kb/`](kb/) contains reusable attack techniques, payload encodings, mitigations,
 and falsifiable success conditions for signal-to-prompt injection.
 
-### Offline CLI harness
-
-The CLI is a deterministic harness for reproducing the included vulnerable and
-hardened scenarios from a terminal.
-
-```bash
-python -m harness.cli list
-python -m harness.cli run C3-I2-facility-morse-actuation
-python -m harness.cli demo C2-I3-smartfarm-note-override
-python -m harness.cli ablate C4-I4-callcenter-voice-override
-```
-
-An editable install also provides the `aat` command:
-
-```bash
-python3 -m pip install .
-aat list
-```
+Interactive real-world diagrams and intentionally vulnerable systems belong in the
+separate
+[AIAgentsAllTheThings-SimLab](https://github.com/rayhanhanaputra/AIAgentsAllTheThings-SimLab)
+project. This repository stays focused on the testing tool.
 
 ## Validation
 
@@ -173,18 +188,21 @@ npm --prefix web run build
 npm --prefix web run test:ui
 ```
 
-The backend suite covers the offline harness and Workbench API. Connector E2E tests
-use the bundled loopback targets; browser tests cover the primary UI workflows.
+The backend suite covers the Workbench API, connector policies, evidence storage, and
+hardware bridge. Connector E2E tests use test-only loopback fixtures; browser tests
+cover the primary UI workflows.
 
 ## Repository map
 
 ```text
 web/         Web Workbench interface
 harness/api/ Workbench API, connectors, mapper, storage, and analysis
-sims/        Safe dummy targets and reference simulations
-harness/     Deterministic CLI harness and channel encoders
+harness/hardware/ Guarded Arduino/ESP32 bridge
+hardware/    Flashable hardware firmware and setup guides
+harness/     Workbench backend runtime and channel encoders
 kb/          Attack knowledge base
 docs/        Security, taxonomy, and integration guides
+tests/fixtures/ Loopback connector fixtures used only by automated tests
 ```
 
 ## License

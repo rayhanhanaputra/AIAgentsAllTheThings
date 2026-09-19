@@ -12,7 +12,7 @@ from typing import Any, Dict
 
 from harness.core import registry
 from harness.core.types import Message, Payload
-from harness.voice.types import (
+from .run_types import (
     AnalysisResult,
     RunState,
     SessionEvent,
@@ -20,7 +20,7 @@ from harness.voice.types import (
     Verdict,
 )
 
-from .connectors import ConnectorError, TargetExchange, connector_for, perceived_input
+from .connectors import ConnectorError, TargetExchange, connector_for
 from .mapper import MAPPER_OUTPUT_FIELD, map_message, mapper_preview
 from .response_mapper import map_target_response
 from .targets import TargetProfile
@@ -70,11 +70,6 @@ def encode_channel(adapter: str, fields: Dict[str, Any]) -> Message:
 
 
 def preview_target(profile: TargetProfile, message: Message) -> Dict[str, Any]:
-    if profile.connector == "simulator":
-        return {
-            "provider": "simulated",
-            "input": perceived_input(message),
-        }
     if profile.mapper_enabled:
         return {
             "stage": "input-mapper",

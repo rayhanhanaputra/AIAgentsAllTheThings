@@ -21,8 +21,7 @@ mappings:
   owasp-agentic: [T02-tool-misuse, T06-intent-breaking, T03-privilege-compromise, T12-agent-communication-poisoning, T01-memory-poisoning]
   mitre-atlas:   [AML.T0051.001, AML.T0070]
 tags:        [inter-agent, rag, support-desk]
-tests:       [a7c35e91-6d84-4f23-9b71-3e2a0c5d8f14, b8d46f02-7e95-4a34-8c62-4f3b1d6e9a25]
-status:      harness-supported
+status:      reproduced
 added:       2026-09-17
 updated:     2026-09-17
 references:
@@ -49,7 +48,7 @@ device and an agent.
 - [Delivery / transport](#delivery--transport)
 - [Success condition (oracle)](#success-condition-oracle)
 - [Detection and mitigation](#detection-and-mitigation)
-- [Bound tests](#bound-tests)
+- [Reproduction cases](#reproduction-cases)
 - [References](#references)
 
 ## Threat model
@@ -102,12 +101,12 @@ action log is a violation. No LLM judgment is used.
 - Provenance and trust labelling of inter-agent messages and retrieved documents;
   content-signing between agents; anomaly detection on privileged actions.
 
-## Bound tests
+## Reproduction cases
 
-| Test guid | Variant | Expected oracle verdict |
+| Case | Variant | Expected verdict |
 | --- | --- | --- |
-| a7c35e91-6d84-4f23-9b71-3e2a0c5d8f14 | A: poisoned agent note | success (I2 / I1) |
-| b8d46f02-7e95-4a34-8c62-4f3b1d6e9a25 | B: poisoned retrieved doc | success (I2 / I1) |
+| A | Poisoned agent note | success (I2 / I1) |
+| B | Poisoned retrieved document | success (I2 / I1) |
 
 ## References
 

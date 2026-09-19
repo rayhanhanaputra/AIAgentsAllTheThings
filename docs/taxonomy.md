@@ -158,8 +158,7 @@ mappings:                                # at least one non-empty mapping requir
   mitre-atlas:      []                    # ids from mappings/mitre-atlas.yaml
   mitre-attack-ics: []                    # ids from mappings/mitre-attack-ics.yaml
 tags:        []                          # ids from mappings/tags.yaml
-tests:       []                          # auto_generated_guid values in harness/tests/
-status:      documented                  # documented | reproduced | harness-supported
+status:      documented                  # documented | reproduced
 added:       YYYY-MM-DD
 updated:     YYYY-MM-DD
 references:
@@ -169,6 +168,5 @@ references:
 
 The `success` field is mandatory. An entry without a falsifiable success condition is
 a description, not a technique, and is not accepted into the corpus.
-`tools/build_registry.py` validates the front matter, checks that `mappings` and `tags` ids
-exist in `mappings/`, and confirms that each `tests` guid resolves to a declarative
-test under `harness/tests/`.
+`tools/build_registry.py` validates the front matter and checks that `mappings` and
+`tags` identifiers exist in `mappings/`.

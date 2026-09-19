@@ -1,5 +1,5 @@
-This license applies to the code portions of AIAgentsAllTheThings, namely the
-directories: harness/, sims/, and tools/.
+This license applies to the code portions of AIAgentsAllTheThings, including the
+directories: harness/, hardware/, tests/, tools/, and web/.
 
 The knowledge base (kb/) and documentation (docs/) are licensed separately under
 CC BY 4.0; see LICENSE-DOCS.

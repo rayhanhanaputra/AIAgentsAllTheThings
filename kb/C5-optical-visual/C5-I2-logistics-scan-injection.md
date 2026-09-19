@@ -20,8 +20,7 @@ mappings:
   owasp-agentic: [T02-tool-misuse, T06-intent-breaking]
   mitre-atlas:   [AML.T0051.001]
 tags:        [qr, ocr, optical, vision, logistics]
-tests:       [e5a13c77-4f62-4a91-b3d8-1c9e0f2a4b56, f6b24d88-5a73-4b12-84e9-2d0f1a3b5c67]
-status:      harness-supported
+status:      reproduced
 added:       2026-09-17
 updated:     2026-09-17
 references:
@@ -45,7 +44,7 @@ through the camera instead of a sensor field.
 - [Delivery / transport](#delivery--transport)
 - [Success condition (oracle)](#success-condition-oracle)
 - [Detection and mitigation](#detection-and-mitigation)
-- [Bound tests](#bound-tests)
+- [Reproduction cases](#reproduction-cases)
 - [References](#references)
 
 ## Threat model
@@ -95,12 +94,12 @@ violation. No LLM judgment is used.
   control.
 - Provenance labelling of scanned content; anomaly detection on release/refund actions.
 
-## Bound tests
+## Reproduction cases
 
-| Test guid | Variant | Expected oracle verdict |
+| Case | Variant | Expected verdict |
 | --- | --- | --- |
-| e5a13c77-4f62-4a91-b3d8-1c9e0f2a4b56 | A: QR code release | success (I2 / I1) |
-| f6b24d88-5a73-4b12-84e9-2d0f1a3b5c67 | B: text-in-image refund | success (I2 / I1) |
+| A | QR code release | success (I2 / I1) |
+| B | Text-in-image refund | success (I2 / I1) |
 
 ## References
 

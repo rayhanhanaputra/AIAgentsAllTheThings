@@ -7,7 +7,7 @@ continuous integration rebuilds them on every change.
 
 | File | Purpose |
 | --- | --- |
-| `index.yaml` | Full record per technique: registry_id, slug, channel, intent, mappings, tests, status. |
+| `index.yaml` | Full record per technique: registry id, slug, channel, intent, mappings, and status. |
 | `index.csv` | Flat table for spreadsheets and paper tables. |
 | `matrix.md` | The Modality Injection Matrix (channel by intent) with links to entries. |
 | `stats.json` | Counts by channel, intent, status, and tag. |
@@ -26,4 +26,3 @@ Validation enforced by the builder:
 - `registry_id` is unique and matches the pattern `AAT-NNNN`.
 - Every `mappings` id exists in the corresponding file under `mappings/`.
 - Every `tags` id exists in `mappings/tags.yaml`.
-- Every `tests` guid exists as an `auto_generated_guid` under `harness/tests/`.

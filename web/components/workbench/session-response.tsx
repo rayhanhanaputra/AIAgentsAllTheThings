@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -69,7 +70,7 @@ export function EmptyResponse({
       <div className="empty-icon">
         {running ? <LoaderCircle className="animate-spin" /> : <ScanLine />}
       </div>
-      <h3>{running ? 'Running simulator…' : title}</h3>
+      <h3>{running ? 'Waiting for target…' : title}</h3>
       <p>
         {running
           ? 'The response and analysis will appear when the run completes.'
@@ -94,6 +95,10 @@ export function SessionResponse({
 }) {
   const ready = !running && !error && result !== null;
   const rawResult = result ? resultForDisplay(result) : null;
+  const observation = result ? observationFromResult(result) : null;
+  const responseViews = observation
+    ? ['transcript', 'observations', 'events', 'analysis', 'raw']
+    : ['transcript', 'events', 'analysis', 'raw'];
   return (
     <section
       className="work-pane"
@@ -140,13 +145,16 @@ export function SessionResponse({
       <Tabs defaultValue="transcript" className="response-tabs">
         <TabsList aria-label="Response views">
           <TabsTrigger value="transcript">Messages</TabsTrigger>
+          {observation && (
+            <TabsTrigger value="observations">Observations</TabsTrigger>
+          )}
           <TabsTrigger value="events">
             Events{ready ? ` (${result.events.length})` : ''}
           </TabsTrigger>
           <TabsTrigger value="analysis">Analysis</TabsTrigger>
           <TabsTrigger value="raw">Raw</TabsTrigger>
         </TabsList>
-        {['transcript', 'events', 'analysis', 'raw'].map((view) => (
+        {responseViews.map((view) => (
           <TabsContent key={view} value={view} className="response-body">
             {running ? (
               <EmptyResponse running />
@@ -156,6 +164,8 @@ export function SessionResponse({
               <EmptyResponse />
             ) : view === 'transcript' ? (
               <Transcript result={result} split={splitTranscript} />
+            ) : view === 'observations' && observation ? (
+              <Observations observation={observation} />
             ) : view === 'events' ? (
               <EventTable result={result} />
             ) : view === 'analysis' ? (
@@ -185,6 +195,59 @@ export function SessionResponse({
         </span>
       </div>
     </section>
+  );
+}
+
+interface CapturedObservation {
+  kind: string;
+  phase: string;
+  source: string;
+  text: string;
+  metadata: Record<string, unknown>;
+  screenshot_url?: string;
+}
+
+interface ObservationPair {
+  before?: CapturedObservation | null;
+  after?: CapturedObservation | null;
+}
+
+function observationFromResult(result: SessionResult): ObservationPair | null {
+  const value = result.metadata?.exchange?.response_metadata?.observation;
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  return value as ObservationPair;
+}
+
+function Observations({ observation }: { observation: ObservationPair }) {
+  return (
+    <div className="observation-grid">
+      {(['before', 'after'] as const).map((phase) => {
+        const captured = observation[phase];
+        if (!captured) return null;
+        const screenshot = captured.screenshot_url
+          ? resolveArtifactUrl(captured.screenshot_url)
+          : null;
+        return (
+          <section className="observation-card" key={phase}>
+            <div className="transcript-label">
+              <ScanLine /> {phase.toUpperCase()}
+              <span className="label-meta">{captured.kind} observer</span>
+            </div>
+            {screenshot && (
+              <Image
+                src={screenshot}
+                alt={`${phase} stimulus observation`}
+                width={720}
+                height={450}
+                unoptimized
+              />
+            )}
+            <pre>{captured.text}</pre>
+            <small>{captured.source}</small>
+          </section>
+        );
+      })}
+    </div>
   );
 }
 
@@ -355,8 +418,8 @@ function Analysis({ result }: { result: SessionResult }) {
           <FileText size={12} className="mr-1 inline" /> Interpretation
         </h3>
         <p>
-          Results describe this simulator run. No observed canary exposure does
-          not establish that an agent is secure.
+          Results describe this target run. No observed canary exposure does not
+          establish that an agent is secure.
         </p>
       </section>
     </div>

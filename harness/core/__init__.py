@@ -1,1 +1,1 @@
-"""Core pipeline: types, plugin registry, engine, and runner."""
+"""Shared channel-message types and encoder registry."""

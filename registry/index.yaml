@@ -9,7 +9,7 @@ techniques:
   - I2
   effect: cyber-physical
   severity: high
-  status: harness-supported
+  status: reproduced
   path: kb/C2-data-field/C2-I3-smartfarm-note-override.md
   mappings:
     owasp-llm:
@@ -30,9 +30,6 @@ techniques:
   - data-field
   - safety-limit
   - unsafe-actuation
-  tests:
-  - 3f2a9c14-6b7e-4d2a-9f1c-8a5e2d4b7c10
-  - 7b81de22-1c3f-4a6b-b2d9-5e8f0a1c2d34
 - registry_id: AAT-0002
   id: C4-I4-callcenter-voice-override
   title: Call-Center Voice Instruction Override
@@ -43,7 +40,7 @@ techniques:
   - I2
   effect: digital
   severity: high
-  status: harness-supported
+  status: reproduced
   path: kb/C4-voice-dtmf/C4-I4-callcenter-voice-override.md
   mappings:
     owasp-llm:
@@ -60,9 +57,6 @@ techniques:
   - dtmf
   - call-center
   - exfiltration
-  tests:
-  - a1c9f0e2-3d47-4b81-9a2e-6f0c5d1b8e34
-  - b2d8e1f3-4e58-4c92-8b3f-7a1d6e2c9f45
 - registry_id: AAT-0003
   id: C3-I2-facility-morse-actuation
   title: Facility Relay Morse / Binary Actuation
@@ -72,7 +66,7 @@ techniques:
   - I1
   effect: cyber-physical
   severity: critical
-  status: harness-supported
+  status: reproduced
   path: kb/C3-actuator-state/C3-I2-facility-morse-actuation.md
   mappings:
     owasp-llm:
@@ -95,9 +89,6 @@ techniques:
   - actuator
   - physical-access
   - unsafe-actuation
-  tests:
-  - c3f10a55-8b21-4e73-9d64-2a7f0b3c1e56
-  - d4e21b66-9c32-4f84-8e75-3b8a1c4d2f67
 - registry_id: AAT-0004
   id: C5-I2-logistics-scan-injection
   title: Logistics Scan QR / OCR Injection
@@ -107,7 +98,7 @@ techniques:
   - I1
   effect: cyber-physical
   severity: high
-  status: harness-supported
+  status: reproduced
   path: kb/C5-optical-visual/C5-I2-logistics-scan-injection.md
   mappings:
     owasp-llm:
@@ -124,9 +115,6 @@ techniques:
   - optical
   - vision
   - logistics
-  tests:
-  - e5a13c77-4f62-4a91-b3d8-1c9e0f2a4b56
-  - f6b24d88-5a73-4b12-84e9-2d0f1a3b5c67
 - registry_id: AAT-0005
   id: C7-I2-supportdesk-inter-agent-injection
   title: Support-Desk Inter-Agent / RAG Injection
@@ -136,7 +124,7 @@ techniques:
   - I1
   effect: digital
   severity: high
-  status: harness-supported
+  status: reproduced
   path: kb/C7-indirect-inter-agent/C7-I2-supportdesk-inter-agent-injection.md
   mappings:
     owasp-llm:
@@ -156,9 +144,6 @@ techniques:
   - inter-agent
   - rag
   - support-desk
-  tests:
-  - a7c35e91-6d84-4f23-9b71-3e2a0c5d8f14
-  - b8d46f02-7e95-4a34-8c62-4f3b1d6e9a25
 - registry_id: AAT-0006
   id: C6-I2-smarthome-rf-access
   title: Smart-Home RF (BLE / NFC) Access Injection
@@ -168,7 +153,7 @@ techniques:
   - I1
   effect: cyber-physical
   severity: critical
-  status: harness-supported
+  status: reproduced
   path: kb/C6-rf-protocol/C6-I2-smarthome-rf-access.md
   mappings:
     owasp-llm:
@@ -189,9 +174,6 @@ techniques:
   - smart-home
   - physical-access
   - unsafe-actuation
-  tests:
-  - c9e57a13-8f26-4b45-a1d3-5e7c2f8b0a91
-  - d1f68b24-9a37-4c56-b2e4-6f8d3a9c1b02
 - registry_id: AAT-0007
   id: C8-I3-hvac-replay-flood
   title: HVAC Control-Loop Replay / Flood
@@ -201,7 +183,7 @@ techniques:
   - I5
   effect: cyber-physical
   severity: high
-  status: harness-supported
+  status: reproduced
   path: kb/C8-feedback-loop/C8-I3-hvac-replay-flood.md
   mappings:
     owasp-llm:
@@ -222,9 +204,6 @@ techniques:
   - hvac
   - dos
   - unsafe-actuation
-  tests:
-  - e2a79c35-1b48-4d67-c3f5-7a9e4b0d2c13
-  - f3b81d46-2c59-4e78-d4a6-8b0f5c1e3d24
 - registry_id: AAT-0008
   id: C1-I3-process-tank-sensor-spoof
   title: Industrial Tank Sensor-Value Spoof
@@ -233,7 +212,7 @@ techniques:
   - I3
   effect: cyber-physical
   severity: high
-  status: harness-supported
+  status: reproduced
   path: kb/C1-sensor-value/C1-I3-process-tank-sensor-spoof.md
   mappings:
     owasp-llm:
@@ -250,9 +229,6 @@ techniques:
   - industrial
   - safety-limit
   - unsafe-actuation
-  tests:
-  - a4d81f57-3b62-4c19-9e75-2a6d0f3b8c14
-  - b5e92a68-4c73-4d2a-af86-3b7e1a4c9d25
 - registry_id: AAT-0009
   id: C2-I4-webapp-prompt-injection
   title: Web-App Prompt Injection (running-target)
@@ -262,7 +238,7 @@ techniques:
   - I1
   effect: digital
   severity: high
-  status: harness-supported
+  status: reproduced
   path: kb/C2-data-field/C2-I4-webapp-prompt-injection.md
   mappings:
     owasp-llm:
@@ -277,9 +253,6 @@ techniques:
   - http
   - tcp
   - exfiltration
-  tests:
-  - aa19b2c3-4d5e-4f60-9a71-8b2c3d4e5f60
-  - bb2ac3d4-5e6f-4071-8b82-9c3d4e5f6071
 - registry_id: AAT-0010
   id: C7-I6-supportdesk-memory-poisoning
   title: Support-Desk Persistent Memory Poisoning
@@ -289,7 +262,7 @@ techniques:
   - I2
   effect: digital
   severity: high
-  status: harness-supported
+  status: reproduced
   path: kb/C7-indirect-inter-agent/C7-I6-supportdesk-memory-poisoning.md
   mappings:
     owasp-llm:
@@ -306,6 +279,3 @@ techniques:
   - rag
   - support-desk
   - persistence
-  tests:
-  - c30d5e7f-1a2b-4c3d-8e4f-5a6b7c8d9e01
-  - d41e6f80-2b3c-4d5e-9f60-6b7c8d9e0f12

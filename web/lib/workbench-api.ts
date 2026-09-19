@@ -13,7 +13,7 @@ export interface SessionEvent {
 
 export interface SessionResult {
   run_id: string;
-  mode: 'repeater' | 'intruder' | 'channel' | 'workbench' | 'campaign';
+  mode: 'workbench' | 'campaign';
   state: 'completed' | 'failed';
   provider: string;
   script: string;
@@ -88,9 +88,8 @@ export type ChannelAdapter =
   | 'ble-advert'
   | 'nfc-tag';
 
-export type TargetEnvironment = 'simulation' | 'staging' | 'production';
+export type TargetEnvironment = 'staging' | 'production';
 export type TargetConnector =
-  | 'simulator'
   | 'http'
   | 'tcp'
   | 'mqtt'
@@ -160,8 +159,12 @@ export interface TargetProfileInput {
   voice_stream_done_value: string;
   voice_stream_chunk_bytes: number;
   voice_stream_max_events: number;
-  hardware_kind: 'ble' | 'nfc' | 'gpio';
-  hardware_operation: 'ble_advertise' | 'nfc_emulate' | 'gpio_sequence';
+  hardware_kind: 'ble' | 'nfc' | 'gpio' | 'led';
+  hardware_operation:
+    | 'ble_advertise'
+    | 'nfc_emulate'
+    | 'gpio_sequence'
+    | 'led_sequence';
   hardware_device_id?: string | null;
   hardware_allowed_device_ids: string[];
   hardware_resource?: string | null;
@@ -169,6 +172,12 @@ export interface TargetProfileInput {
   hardware_duration_ms: number;
   hardware_stop_endpoint?: string | null;
   hardware_stop_template: string;
+  observer_kind: 'none' | 'http' | 'browser';
+  observer_url?: string | null;
+  observer_selector?: string | null;
+  observer_wait_ms: number;
+  observer_timeout_seconds: number;
+  observer_capture_screenshot: boolean;
   timeout_seconds: number;
   evidence: EvidenceRules;
 }
@@ -194,7 +203,12 @@ const API_URL =
   'http://127.0.0.1:8787';
 
 export function resolveArtifactUrl(path: string): string | null {
-  if (!/^\/api\/runs\/[A-Za-z0-9-]+\/audio$/.test(path)) return null;
+  if (
+    !/^\/api\/runs\/[A-Za-z0-9-]+\/(audio|artifacts\/observation_(before|after))$/.test(
+      path,
+    )
+  )
+    return null;
   return `${API_URL}${path}`;
 }
 

@@ -1,4 +1,4 @@
-"""Run the real Workbench API against every local dummy connector."""
+"""Run the Workbench API against every loopback connector fixture."""
 
 from __future__ import annotations
 
@@ -119,16 +119,6 @@ def run_matrix() -> Dict[str, Any]:
     results: list[Dict[str, Any]] = []
     with tempfile.TemporaryDirectory(prefix="aat-e2e-") as directory:
         client = TestClient(create_app(Path(directory) / "workbench.db"))
-        simulator = next(
-            target for target in client.get("/api/targets").json()["targets"]
-            if target["connector"] == "simulator"
-        )
-        for adapter, fields in CHANNELS.items():
-            passed, detail = _run(
-                client, simulator["id"], adapter, fields, marker_required=False
-            )
-            results.append(_case("simulator", adapter, passed, detail))
-
         for connector in GENERAL_CONNECTORS:
             target_id = _create(client, _base_profile(f"Dummy {connector}", connector))
             for adapter, fields in CHANNELS.items():
@@ -213,6 +203,38 @@ def run_matrix() -> Dict[str, Any]:
                 production_acknowledged=True,
             )
             results.append(_case("device-bridge", adapter, passed, detail, kind))
+
+        led_rig = _base_profile("Dummy LED observation rig", "device-bridge")
+        led_rig.update(
+            {
+                "endpoint": f"http://127.0.0.1:{HTTP_PORT}/bridge/action",
+                "hardware_stop_endpoint": (
+                    f"http://127.0.0.1:{HTTP_PORT}/bridge/stop"
+                ),
+                "hardware_kind": "led",
+                "hardware_operation": "led_sequence",
+                "hardware_device_id": "bridge-01",
+                "hardware_allowed_device_ids": ["bridge-01"],
+                "hardware_resource": "pin-9",
+                "hardware_allowed_resources": ["pin-9"],
+                "request_template": '{"device_id":"{{device_id}}","operation":"{{operation}}","resource":"{{resource}}","duration_ms":"{{duration_ms}}","input":"{{body}}"}',
+                "response_path": "text",
+                "actions_path": "actions",
+                "observer_kind": "http",
+                "observer_url": f"http://127.0.0.1:{HTTP_PORT}/observer",
+                "observer_wait_ms": 0,
+            }
+        )
+        passed, detail = _run(
+            client,
+            _create(client, led_rig),
+            "morse-blink",
+            CHANNELS["morse-blink"],
+            production_acknowledged=True,
+        )
+        results.append(
+            _case("physical-rig+http-observer", "morse-blink", passed, detail, "led")
+        )
 
         os.environ["AAT_DUMMY_MAPPER_KEY"] = "dummy-mapper-key"
         mapped = _base_profile("Dummy mapped HTTP", "http")

@@ -20,8 +20,7 @@ mappings:
   owasp-agentic:    [T02-tool-misuse, T06-intent-breaking, T03-privilege-compromise, T09-identity-spoofing]
   mitre-atlas:      [AML.T0051.001]
 tags:        [ble, nfc, rf, smart-home, physical-access, unsafe-actuation]
-tests:       [c9e57a13-8f26-4b45-a1d3-5e7c2f8b0a91, d1f68b24-9a37-4c56-b2e4-6f8d3a9c1b02]
-status:      harness-supported
+status:      reproduced
 added:       2026-09-17
 updated:     2026-09-17
 references:
@@ -44,7 +43,7 @@ arriving over the air.
 - [Delivery / transport](#delivery--transport)
 - [Success condition (oracle)](#success-condition-oracle)
 - [Detection and mitigation](#detection-and-mitigation)
-- [Bound tests](#bound-tests)
+- [Reproduction cases](#reproduction-cases)
 - [References](#references)
 
 ## Threat model
@@ -93,12 +92,12 @@ No LLM judgment is used.
   defensive control.
 - Signed beacons and rotating identifiers; anomaly detection on lock and alarm actions.
 
-## Bound tests
+## Reproduction cases
 
-| Test guid | Variant | Expected oracle verdict |
+| Case | Variant | Expected verdict |
 | --- | --- | --- |
-| c9e57a13-8f26-4b45-a1d3-5e7c2f8b0a91 | A: BLE advertisement unlock | success (I2 / I1) |
-| d1f68b24-9a37-4c56-b2e4-6f8d3a9c1b02 | B: NFC tag disarm | success (I2 / I1) |
+| A | BLE advertisement unlock | success (I2 / I1) |
+| B | NFC tag disarm | success (I2 / I1) |
 
 ## References
 

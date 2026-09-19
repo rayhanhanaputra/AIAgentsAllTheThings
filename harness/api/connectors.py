@@ -248,6 +248,22 @@ def _parse_observation(
     return response_text[:MAX_HTTP_RESPONSE_BYTES], actions
 
 
+def _json_or_text(raw: str) -> Any:
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        return raw
+
+
+def _observation_without_media(value: Dict[str, Any]) -> Dict[str, Any]:
+    safe = copy.deepcopy(value)
+    for phase in ("before", "after"):
+        observation = safe.get(phase)
+        if isinstance(observation, dict) and observation.get("screenshot_data_url"):
+            observation["screenshot_data_url"] = "<screenshot stored separately>"
+    return safe
+
+
 class _PinnedHTTPConnection(http.client.HTTPConnection):
     def __init__(self, host: str, pinned_ip: str, port: int, timeout: float) -> None:
         super().__init__(host, port=port, timeout=timeout)
@@ -1150,7 +1166,7 @@ class VoiceStreamConnector:
 
 
 class DeviceBridgeConnector:
-    """Short-lived BLE, NFC, or GPIO bridge action with mandatory cleanup."""
+    """Short-lived physical stimulus with optional out-of-band observation."""
 
     def preview(self, profile: TargetProfile, message: Message) -> Dict[str, Any]:
         extras = self._extras(profile)
@@ -1185,6 +1201,13 @@ class DeviceBridgeConnector:
                 "duration_ms": profile.hardware_duration_ms,
                 "concurrency": 1,
             },
+            "observer": {
+                "kind": profile.observer_kind,
+                "url": profile.observer_url,
+                "selector": profile.observer_selector,
+                "wait_ms": profile.observer_wait_ms,
+                "capture_screenshot": profile.observer_capture_screenshot,
+            },
         }
 
     def execute(self, profile: TargetProfile, message: Message) -> TargetExchange:
@@ -1206,6 +1229,12 @@ class DeviceBridgeConnector:
         )
         action_result: Optional[Dict[str, Any]] = None
         action_error: Optional[ConnectorError] = None
+        before_observation = None
+        after_observation = None
+        if profile.observer_kind != "none":
+            from .observers import capture_observation
+
+            before_observation = capture_observation(profile, "before")
         try:
             action_result = self._post(
                 profile.endpoint,
@@ -1216,6 +1245,13 @@ class DeviceBridgeConnector:
             )
         except ConnectorError as exc:
             action_error = exc
+
+        if action_error is None and profile.observer_kind != "none":
+            try:
+                time.sleep(profile.observer_wait_ms / 1_000)
+                after_observation = capture_observation(profile, "after")
+            except ConnectorError as exc:
+                action_error = ConnectorError(f"out-of-band observation failed: {exc}")
 
         try:
             stop_result = self._post(
@@ -1239,10 +1275,32 @@ class DeviceBridgeConnector:
         if action_result is None:  # Defense in depth for type narrowing.
             raise ConnectorError("device bridge returned no action result")
 
-        raw = str(action_result["raw"])
-        response_text, actions = _parse_observation(
-            raw, profile.response_path, profile.actions_path
-        )
+        action_raw = str(action_result["raw"])
+        if after_observation is None:
+            raw = action_raw
+            response_text, actions = _parse_observation(
+                raw, profile.response_path, profile.actions_path
+            )
+            observation_metadata = None
+        else:
+            response_text, actions = _parse_observation(
+                after_observation.raw, profile.response_path, profile.actions_path
+            )
+            if not profile.response_path:
+                response_text = after_observation.text
+            observation_metadata = {
+                "before": before_observation.to_dict() if before_observation else None,
+                "after": after_observation.to_dict(),
+            }
+            raw = json.dumps(
+                {
+                    "bridge_response": _json_or_text(action_raw),
+                    "observation": _observation_without_media(
+                        observation_metadata
+                    ),
+                },
+                ensure_ascii=False,
+            )
         return TargetExchange(
             connector="device-bridge",
             destination=profile.endpoint,
@@ -1256,6 +1314,7 @@ class DeviceBridgeConnector:
                 "device_id": profile.hardware_device_id,
                 "resource": profile.hardware_resource,
                 "duration_ms": profile.hardware_duration_ms,
+                "observation": observation_metadata,
             },
             raw_response=raw,
             response_text=response_text,
@@ -1343,6 +1402,4 @@ def connector_for(profile: TargetProfile) -> Connector:
     try:
         return CONNECTORS[profile.connector]
     except KeyError:
-        raise ConnectorError(
-            "simulator targets are executed by the simulator engine"
-        ) from None
+        raise ConnectorError(f"unsupported target connector: {profile.connector}") from None

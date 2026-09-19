@@ -16,7 +16,7 @@ consistent reference.
 - Front matter first, following `kb/_template/technique.md`, then the body.
 - Body sections in this order: Summary (a linked table of contents), Threat model,
   Payload / encoding, Delivery / transport, Success condition (oracle), Detection and
-  mitigation, Bound tests, References.
+  mitigation, Reproduction cases, References.
 - One technique per file. Group files by channel folder.
 
 ## Identifiers
@@ -25,7 +25,6 @@ consistent reference.
   `C2-I3-smartfarm-note-override`. Equals the filename.
 - **registry_id** — `AAT-NNNN`, assigned on merge, never reused, and safe to cite or
   link from Workbench evidence.
-- **auto_generated_guid** — a UUID per runnable test.
 
 ## References
 

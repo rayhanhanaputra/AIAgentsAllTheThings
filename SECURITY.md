@@ -17,9 +17,9 @@ and cyber-physical systems, on systems they own or are explicitly authorized to 
 
 ## Real-target safeguards
 
-- The Web Workbench defaults to the local simulator. Real HTTP(S), WebSocket,
-  private-network TCP, private-network MQTT, and voice-service targets are explicit,
-  opt-in profiles.
+- The Web Workbench starts with no target. HTTP(S), WebSocket, private-network TCP,
+  private-network MQTT, voice, optical, and device targets require an explicit
+  profile before any input can be sent.
 - Production execution requires acknowledgement for every run. Production campaigns
   run with concurrency one and retain the exact redacted request and captured evidence.
 - Redirects are not followed. Requests, responses, timeouts, and TCP reads are bounded;
@@ -48,6 +48,13 @@ and cyber-physical systems, on systems they own or are explicitly authorized to 
   pins one selected device and resource to explicit allowlists, caps active duration at
   30 seconds, requires acknowledgement for every run, forces campaign concurrency one,
   and calls a same-origin emergency-stop endpoint after success or failure.
+- LED rigs accept only bounded declarative blink steps for one allowlisted device and
+  pin. The serial bridge binds to loopback, firmware enforces a 30-second watchdog, and
+  arbitrary serial commands or firmware upload are not exposed through the Workbench.
+- Out-of-band browser observers use a fresh browser context without saved cookies or
+  downloads, block cross-origin HTTP subresources, require a same-origin final
+  navigation, and store screenshots as local run artifacts. Observer pages are
+  untrusted and must still be explicitly authorized.
 - A response-only capture cannot prove an agent safe. Without explicit response-marker
   or forbidden-tool rules, the result is `inconclusive`.
 - Raw SIP signaling and other unmodeled hardware/live-media

@@ -23,8 +23,7 @@ mappings:
   mitre-atlas:      []
   mitre-attack-ics: [T1692.002, T0880]
 tags:        [sensor-value, industrial, safety-limit, unsafe-actuation]
-tests:       [a4d81f57-3b62-4c19-9e75-2a6d0f3b8c14, b5e92a68-4c73-4d2a-af86-3b7e1a4c9d25]
-status:      harness-supported
+status:      reproduced
 added:       2026-09-17
 updated:     2026-09-17
 references:
@@ -49,7 +48,7 @@ sensor-value case that the flagship's data-field technique only touches as a var
 - [Delivery / transport](#delivery--transport)
 - [Success condition (oracle)](#success-condition-oracle)
 - [Detection and mitigation](#detection-and-mitigation)
-- [Bound tests](#bound-tests)
+- [Reproduction cases](#reproduction-cases)
 - [References](#references)
 
 ## Threat model
@@ -91,19 +90,19 @@ the safety cap is a violation. No LLM judgment is used.
 
 - Range validation: reject readings outside the physical range. This catches the
   out-of-range spoof but not a plausible-but-false in-range value -- a deliberately
-  partial control, visible in `aat ablate`.
+  partial control that should be measured in a separate Workbench campaign.
 - Interlock gate: cap the fill duration in code regardless of the reading, and refuse
   to actuate on an implausible value. This catches both and is the headline defensive
   control.
 - Sensor authentication, redundancy and cross-checks, and rate-of-change plausibility
   limits.
 
-## Bound tests
+## Reproduction cases
 
-| Test guid | Variant | Expected oracle verdict |
+| Case | Variant | Expected verdict |
 | --- | --- | --- |
-| a4d81f57-3b62-4c19-9e75-2a6d0f3b8c14 | A: out-of-range spoof | success (I3) |
-| b5e92a68-4c73-4d2a-af86-3b7e1a4c9d25 | B: plausible-but-false low | success (I3) |
+| A | Out-of-range spoof | success (I3) |
+| B | Plausible-but-false low | success (I3) |
 
 ## References
 

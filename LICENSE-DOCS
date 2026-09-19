@@ -4,8 +4,8 @@ This license applies to the knowledge base and documentation portions of
 AIAgentsAllTheThings, namely the directories: kb/ and docs/, and the generated
 registry/ files derived from them.
 
-The code portions (harness/, sims/, tools/) are licensed separately under the
-Apache License 2.0; see LICENSE-CODE.
+The code portions (harness/, hardware/, tests/, tools/, and web/) are licensed
+separately under the Apache License 2.0; see LICENSE-CODE.
 
 Copyright (c) 2026 The AIAgentsAllTheThings authors.
 

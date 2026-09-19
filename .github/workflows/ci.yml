@@ -61,7 +61,7 @@ jobs:
       - name: Run connector and mapper matrix
         run: |
           set -euo pipefail
-          python -m sims.workbench_targets.server > /tmp/aat-dummy-targets.log 2>&1 &
+          python -m tests.fixtures.connector_targets.server > /tmp/aat-connector-fixtures.log 2>&1 &
           dummy_pid=$!
           trap 'kill "$dummy_pid" 2>/dev/null || true' EXIT
           for attempt in {1..30}; do
@@ -71,7 +71,7 @@ jobs:
             sleep 1
           done
           curl --fail --silent http://127.0.0.1:9101/health > /dev/null || {
-            cat /tmp/aat-dummy-targets.log
+            cat /tmp/aat-connector-fixtures.log
             exit 1
           }
           python -m tools.test_workbench_e2e

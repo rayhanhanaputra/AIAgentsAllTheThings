@@ -1,10 +1,10 @@
-.PHONY: install check registry test lint all demo workbench-api workbench-web dummy-targets workbench-e2e
+.PHONY: install check registry test lint all workbench-api workbench-web connector-fixtures workbench-e2e arduino-bridge-sim
 
 install:
 	python3 -m pip install --upgrade "pip>=23"
 	python3 -m pip install ".[dev,workbench]"
 
-# Validate the knowledge base and declarative tests against the registry.
+# Validate the knowledge base against the generated registry.
 check:
 	python3 tools/build_registry.py --check
 
@@ -12,7 +12,7 @@ check:
 registry:
 	python3 tools/build_registry.py
 
-# Run the deterministic test suite.
+# Run backend and connector-unit tests.
 test:
 	python3 -m pytest -q
 
@@ -23,15 +23,6 @@ lint:
 # Everything CI runs.
 all: check test lint
 
-# Run all eight flagship demonstrations.
-demo:
-	@for t in C1-I3-process-tank-sensor-spoof C2-I3-smartfarm-note-override \
-	          C3-I2-facility-morse-actuation C4-I4-callcenter-voice-override \
-	          C5-I2-logistics-scan-injection C6-I2-smarthome-rf-access \
-	          C7-I2-supportdesk-inter-agent-injection C8-I3-hvac-replay-flood; do \
-	    python3 -m harness.cli demo $$t ; \
-	done
-
 # Start the local-only workbench services in separate terminals.
 workbench-api:
 	python3 -m harness.api
@@ -39,9 +30,12 @@ workbench-api:
 workbench-web:
 	npm --prefix web run dev
 
-dummy-targets:
-	python3 -m sims.workbench_targets.server
+connector-fixtures:
+	python3 -m tests.fixtures.connector_targets.server
 
-# Run in another terminal while dummy-targets is active.
+# Run in another terminal while connector-fixtures is active.
 workbench-e2e:
 	python3 -m tools.test_workbench_e2e
+
+arduino-bridge-sim:
+	python3 -m harness.hardware.arduino_bridge --simulate

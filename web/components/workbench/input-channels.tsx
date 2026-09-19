@@ -621,6 +621,9 @@ export function Workbench({ targets }: { targets: TargetProfile[] }) {
               }}
               disabled={running}
             >
+              {targets.length === 0 && (
+                <option value="">Add a target in Targets</option>
+              )}
               {targets.map((item) => (
                 <option key={item.id} value={item.id}>
                   {item.name} · {item.connector}

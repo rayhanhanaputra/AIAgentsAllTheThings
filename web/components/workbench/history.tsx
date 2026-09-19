@@ -123,15 +123,7 @@ export function History() {
                         {run.run_id.slice(0, 8)}
                       </code>
                       <span>
-                        {run.mode === 'repeater'
-                          ? 'Repeater'
-                          : run.mode === 'intruder'
-                            ? 'Intruder'
-                            : run.mode === 'campaign'
-                              ? 'Campaign'
-                              : run.mode === 'workbench'
-                                ? 'Workbench'
-                                : 'Channel'}
+                        {run.mode === 'campaign' ? 'Campaign' : 'Workbench'}
                       </span>
                       <span>
                         <VerdictBadge result={run} />

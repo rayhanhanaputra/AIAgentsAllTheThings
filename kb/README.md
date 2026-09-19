@@ -31,11 +31,10 @@ counts by channel, intent, and status.
 
 ## Entry status
 
-Each entry declares one of three maturity levels:
+Each entry declares one of two maturity levels:
 
 - `documented` — described with a threat model and a falsifiable success condition.
-- `reproduced` — demonstrated at least once against a real target.
-- `harness-supported` — bound to a runnable declarative test under `harness/tests/`.
+- `reproduced` — demonstrated at least once in a controlled lab or authorized target.
 
 ## Adding a technique
 
@@ -45,10 +44,9 @@ sections, and open a single-file pull request. An entry without a falsifiable
 
 ## Identifier scheme
 
-Every technique carries three identifiers:
+Every technique carries two identifiers:
 
 - **slug** — the human-readable filename, for example `C2-I3-smartfarm-note-override`.
 - **registry_id** — a stable, never-reused, citable identifier, for example `AAT-0001`.
-- **auto_generated_guid** — one per runnable test in `harness/tests/`.
 
 Slugs may be renamed; the registry_id is permanent and is what the paper cites.

@@ -1,14 +1,9 @@
-"""A minimal plugin registry.
-
-Each plugin category is a namespace of named plugins. Plugins register themselves
-at import time with the `register` decorator; `load_all` imports every plugin
-package so the registries are populated before use.
-"""
+"""Minimal registry for Workbench input encoders."""
 from __future__ import annotations
 
 from typing import Any, Callable
 
-KINDS = ("scenario", "payload", "encoder", "transport", "target", "oracle", "reporter")
+KINDS = ("encoder",)
 _REGISTRIES: dict[str, dict[str, Any]] = {k: {} for k in KINDS}
 _LOADED = False
 
@@ -43,14 +38,5 @@ def load_all() -> None:
     global _LOADED
     if _LOADED:
         return
-    # Import order does not matter; each package registers its plugins on import.
-    from harness import (  # noqa: F401
-        scenarios,
-        payloads,
-        encoders,
-        transports,
-        targets,
-        oracles,
-        reporters,
-    )
+    from harness import encoders  # noqa: F401
     _LOADED = True
